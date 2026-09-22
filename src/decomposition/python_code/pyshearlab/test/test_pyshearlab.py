@@ -1,5 +1,5 @@
 import numpy as np
-import pyshearlab
+import decomposition.python_code.pyshearlab as pyshearlab
 import pytest
 
 

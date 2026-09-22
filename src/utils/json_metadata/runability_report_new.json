@@ -1,0 +1,2801 @@
+[
+  {
+    "repo_name": "A-general-image-fusion-framework-using-multi-task-semi-supervised-learning",
+    "model_used": "gemini-2.5-flash-lite",
+    "overall_ease_score": 5,
+    "ease_label": "moderate",
+    "has_lockfile": false,
+    "has_checkpoint": true,
+    "key_dependencies": [
+      {
+        "name": "PyTorch",
+        "version_pinned": false
+      }
+    ],
+    "linked_url": [],
+    "dataset_used": [
+      "MFIF",
+      "MEIF",
+      "IVF",
+      "MFF",
+      "MEF",
+      "MMF"
+    ],
+    "setup_steps": [
+      {
+        "order": 1,
+        "command": "git clone <repository_url>",
+        "description": "Clone the repository."
+      },
+      {
+        "order": 2,
+        "command": "pip install -r requirements.txt",
+        "description": "Install necessary dependencies. (Note: requirements.txt is not present in the provided tree, assuming it exists or can be inferred)."
+      },
+      {
+        "order": 3,
+        "command": "python train_stage1.py",
+        "description": "Prepare training data for MFIF and MEIF tasks and run the first stage of training."
+      },
+      {
+        "order": 4,
+        "command": "python train_stage2.py",
+        "description": "Prepare training data for MFIF, MEIF, and IVF tasks and run the second stage of training."
+      },
+      {
+        "order": 5,
+        "command": "python test.py",
+        "description": "Prepare testing data and run the testing script. Adjust 'is_second_stage' parameter for different test sets (MFF/MEF vs. MMF/IVF)."
+      }
+    ],
+    "one_liner_possible": false,
+    "one_liner_command": null,
+    "readme_quality": "good",
+    "potential_blockers": [
+      "The `requirements.txt` file is not present in the provided file tree, which is crucial for easily installing dependencies.",
+      "The README mentions preparing training and testing data, but does not specify the format or source of this data, requiring further investigation.",
+      "The repository contains a `.pth` file (`two_fuse_rule.pth`), indicating pre-trained weights, but there's no explicit instruction on how to obtain or use them for inference without training.",
+      "The `MEFSSIM/readme.txt` and `models/pyramid_model/readme.me` files are present but their content is not provided, which might contain important setup or usage information."
+    ],
+    "summary": "This repository provides a framework for image fusion using multi-task semi-supervised learning. While the README outlines clear steps for training and testing, the absence of a `requirements.txt` file and detailed data preparation instructions makes the initial setup moderately challenging. The presence of pre-trained weights is a plus for testing, but their acquisition and use are not explicitly detailed."
+  },
+  {
+    "repo_name": "APGFusion",
+    "model_used": "gemini-2.5-flash-lite",
+    "overall_ease_score": 7,
+    "ease_label": "easy",
+    "has_lockfile": false,
+    "has_checkpoint": true,
+    "key_dependencies": [
+      {
+        "name": "torch",
+        "version_pinned": true
+      },
+      {
+        "name": "scipy",
+        "version_pinned": true
+      },
+      {
+        "name": "scikit-image",
+        "version_pinned": true
+      },
+      {
+        "name": "scikit-learn",
+        "version_pinned": true
+      },
+      {
+        "name": "tqdm",
+        "version_pinned": true
+      }
+    ],
+    "linked_url": [],
+    "dataset_used": [],
+    "setup_steps": [
+      {
+        "order": 1,
+        "command": "git clone https://github.com/example/APGFusion.git",
+        "description": "Clone the repository."
+      },
+      {
+        "order": 2,
+        "command": "pip install torch==1.12.1+cu113 scipy==1.9.3 scikit-image==0.19.2 scikit-learn==1.1.3 tqdm==4.62.0",
+        "description": "Install the recommended Python dependencies."
+      },
+      {
+        "order": 3,
+        "command": "python dataprocessing.py",
+        "description": "Run the data preprocessing script."
+      },
+      {
+        "order": 4,
+        "command": "python train.py",
+        "description": "Run the model training script."
+      }
+    ],
+    "one_liner_possible": false,
+    "one_liner_command": null,
+    "readme_quality": "good",
+    "potential_blockers": [
+      "The README recommends a specific CUDA version (cu113) for PyTorch, which might not be available on all systems.",
+      "No explicit mention of dataset availability or download instructions."
+    ],
+    "summary": "This repository is relatively easy to set up, requiring cloning, installing specific Python dependencies, and running two provided scripts for data processing and training. The presence of a checkpoint file is a plus for quick testing. However, the specific CUDA version requirement and lack of dataset details could pose minor challenges."
+  },
+  {
+    "repo_name": "ARFFusion",
+    "model_used": "gemini-2.5-flash-lite",
+    "overall_ease_score": 7,
+    "ease_label": "easy",
+    "has_lockfile": true,
+    "has_checkpoint": true,
+    "key_dependencies": [
+      {
+        "name": "conda",
+        "version_pinned": false
+      },
+      {
+        "name": "pytorch",
+        "version_pinned": false
+      },
+      {
+        "name": "numpy",
+        "version_pinned": false
+      },
+      {
+        "name": "opencv-python",
+        "version_pinned": false
+      }
+    ],
+    "linked_url": [
+      {
+        "url": "http://www.med.harvard.edu/AANLIB/home.html",
+        "description": "Harvard Medical website for example image pairs"
+      },
+      {
+        "url": "https://drive.google.com/drive/folders/1WK_kSN-xHo1x1DOppNmSW7MH9cxeudsx?usp=sharing",
+        "description": "Google Drive link for pre-trained model"
+      },
+      {
+        "url": "https://pan.baidu.com/s/1UDEu_Mwkl0G8TnOO8KSLlQ?pwd=968k",
+        "description": "Baidu Yun link for pre-trained model"
+      }
+    ],
+    "dataset_used": [
+      "mri_ct",
+      "mri_pet"
+    ],
+    "setup_steps": [
+      {
+        "order": 1,
+        "command": "conda env create -f environment/environment.yml",
+        "description": "Create and activate the conda environment"
+      },
+      {
+        "order": 2,
+        "command": "conda activate LSCI",
+        "description": "Activate the conda environment"
+      },
+      {
+        "order": 3,
+        "command": "wget https://drive.google.com/drive/folders/1WK_kSN-xHo1x1DOppNmSW7MH9cxeudsx?usp=sharing -O checkpoint/model.pth",
+        "description": "Download the pre-trained model and place it in the checkpoint directory"
+      },
+      {
+        "order": 4,
+        "command": "python test_robust.py",
+        "description": "Run the testing script to generate fused images"
+      }
+    ],
+    "one_liner_possible": false,
+    "one_liner_command": null,
+    "readme_quality": "excellent",
+    "potential_blockers": [
+      "The Baidu Yun link requires a password, which is provided, but might be a barrier for some users.",
+      "The dataset structure is clearly defined, but users need to provide their own images following this structure."
+    ],
+    "summary": "This repository is easy to set up. The README provides clear instructions for environment setup using conda, downloading pre-trained weights, and running tests. The key dependencies are managed by conda, and the setup process is straightforward."
+  },
+  {
+    "repo_name": "ATDFusion",
+    "model_used": "gemini-2.5-flash-lite",
+    "overall_ease_score": 7,
+    "ease_label": "easy",
+    "has_lockfile": true,
+    "has_checkpoint": false,
+    "key_dependencies": [
+      {
+        "name": "PyTorch",
+        "version_pinned": true
+      },
+      {
+        "name": "torchvision",
+        "version_pinned": true
+      },
+      {
+        "name": "numpy",
+        "version_pinned": true
+      },
+      {
+        "name": "opencv-python",
+        "version_pinned": true
+      },
+      {
+        "name": "Pillow",
+        "version_pinned": true
+      },
+      {
+        "name": "tqdm",
+        "version_pinned": true
+      }
+    ],
+    "linked_url": [
+      {
+        "url": "https://hecktor25.grand-challenge.org/",
+        "description": "official HECKTOR 2025 website"
+      },
+      {
+        "url": "https://www.med.harvard.edu/AANLIB/home.html",
+        "description": "Harvard Medical School website"
+      },
+      {
+        "url": "https://pan.baidu.com/s/1kCttUIk-AOzc_IMlUcWM_g?pwd=wr5a",
+        "description": "pretrained model weights"
+      }
+    ],
+    "dataset_used": [
+      "HECKTOR 2025",
+      "Medical_dataset_test"
+    ],
+    "setup_steps": [
+      {
+        "order": 1,
+        "command": "pip install -r requirements.txt",
+        "description": "Install project dependencies."
+      },
+      {
+        "order": 2,
+        "command": "mkdir checkpoints",
+        "description": "Create a directory to store model weights."
+      },
+      {
+        "order": 3,
+        "command": "wget <link_to_model_weights> -P checkpoints/",
+        "description": "Download pretrained model weights and place them in the checkpoints directory."
+      },
+      {
+        "order": 4,
+        "command": "python test.py",
+        "description": "Run inference to generate test results."
+      }
+    ],
+    "one_liner_possible": false,
+    "one_liner_command": null,
+    "readme_quality": "good",
+    "potential_blockers": [
+      "The dataset needs to be downloaded from an external source and organized in a specific directory structure.",
+      "The pretrained model weights need to be downloaded from a Baidu Netdisk link, which might be slow or inaccessible depending on the user's location.",
+      "The README mentions a 'link to be provided' for the model weights, indicating it might be missing or outdated."
+    ],
+    "summary": "This repository is relatively easy to set up, requiring a standard pip install for dependencies. However, users must manually download datasets and model weights from external sources and organize them correctly, which adds a few manual steps. The inference can then be run with a single Python command."
+  },
+  {
+    "repo_name": "AWM-Fuse",
+    "model_used": "gemini-2.5-flash-lite",
+    "overall_ease_score": 6,
+    "ease_label": "moderate",
+    "has_lockfile": true,
+    "has_checkpoint": true,
+    "key_dependencies": [
+      {
+        "name": "PyTorch",
+        "version_pinned": false
+      },
+      {
+        "name": "torchvision",
+        "version_pinned": false
+      },
+      {
+        "name": "torchaudio",
+        "version_pinned": false
+      },
+      {
+        "name": "timm",
+        "version_pinned": false
+      },
+      {
+        "name": "einops",
+        "version_pinned": false
+      },
+      {
+        "name": "clip",
+        "version_pinned": false
+      },
+      {
+        "name": "transformers",
+        "version_pinned": false
+      },
+      {
+        "name": "opencv-python",
+        "version_pinned": false
+      }
+    ],
+    "linked_url": [
+      {
+        "url": "https://arxiv.org/abs/2603.02560",
+        "description": "arXiv paper link"
+      },
+      {
+        "url": "https://www.python.org/",
+        "description": "Python version information"
+      },
+      {
+        "url": "https://pytorch.org/",
+        "description": "PyTorch version information"
+      },
+      {
+        "url": "https://pan.baidu.com/s/17TUs9KbUg1E1YaJ-utyLTQ?pwd=46j6",
+        "description": "Dataset download link"
+      },
+      {
+        "url": "https://pan.baidu.com/s/1T0C73v3ypZH1z9qwG1jOxw?pwd=sbm3",
+        "description": "Pre-trained models download link"
+      }
+    ],
+    "dataset_used": [
+      "AWMM-Text"
+    ],
+    "setup_steps": [
+      {
+        "order": 1,
+        "command": "git clone https://github.com/yourusername/AWM-Fuse.git",
+        "description": "Clone the repository."
+      },
+      {
+        "order": 2,
+        "command": "cd AWM-Fuse",
+        "description": "Navigate into the cloned repository directory."
+      },
+      {
+        "order": 3,
+        "command": "pip install -r requirements.txt",
+        "description": "Install all project dependencies."
+      }
+    ],
+    "one_liner_possible": false,
+    "one_liner_command": null,
+    "readme_quality": "excellent",
+    "potential_blockers": [
+      "The dataset download links are to Baidu Cloud, which may have regional access restrictions or require specific download managers.",
+      "The README mentions 'yourusername' in the git clone command, which needs to be replaced with the actual repository owner's username.",
+      "The README indicates that pre-trained models and datasets are available for download, but the actual data preparation and placement according to the 'Dataset Structure' section might require manual effort.",
+      "The installation instructions suggest installing PyTorch separately before installing other dependencies, which might lead to version conflicts if not managed carefully. It's generally better to ensure PyTorch is installed correctly first, or rely on the `requirements.txt` if it specifies PyTorch versions."
+    ],
+    "summary": "This repository provides a PyTorch implementation for multi-modality image fusion in adverse weather. Setup involves cloning the repository and installing dependencies via `requirements.txt`. While the core setup is straightforward, users may encounter challenges with accessing the provided dataset and model download links (Baidu Cloud) and ensuring correct data organization."
+  },
+  {
+    "repo_name": "CAWM-Mamba",
+    "model_used": "gemini-2.5-flash-lite",
+    "overall_ease_score": 7,
+    "ease_label": "easy",
+    "has_lockfile": false,
+    "has_checkpoint": true,
+    "key_dependencies": [
+      {
+        "name": "PyTorch",
+        "version_pinned": false
+      },
+      {
+        "name": "timm",
+        "version_pinned": false
+      },
+      {
+        "name": "einops",
+        "version_pinned": false
+      },
+      {
+        "name": "pytorch-wavelets",
+        "version_pinned": false
+      },
+      {
+        "name": "pywt",
+        "version_pinned": false
+      },
+      {
+        "name": "mamba-ssm",
+        "version_pinned": false
+      }
+    ],
+    "linked_url": [
+      {
+        "url": "https://arxiv.org/abs/2603.02560",
+        "description": "arXiv link"
+      },
+      {
+        "url": "https://www.sciencedirect.com/science/article/abs/pii/S0957417426005786",
+        "description": "ESWA link"
+      },
+      {
+        "url": "https://www.python.org/",
+        "description": "Python link"
+      },
+      {
+        "url": "https://pytorch.org/",
+        "description": "PyTorch link"
+      },
+      {
+        "url": "https://pan.baidu.com/s/1z6TTOF3MbocogfvyTPJXmQ?pwd=a528",
+        "description": "Baidu Cloud download for Single Weather pre-trained models"
+      },
+      {
+        "url": "https://pan.baidu.com/s/14FIXzRgED-qYiZPmJENC2A?pwd=ui2u",
+        "description": "Baidu Cloud download for Compound Weather pre-trained models"
+      }
+    ],
+    "dataset_used": [
+      "AWMM-100K benchmark",
+      "three standard fusion datasets"
+    ],
+    "setup_steps": [
+      {
+        "order": 1,
+        "command": "git clone https://github.com/yourusername/CAWM-Mamba.git",
+        "description": "Clone the repository"
+      },
+      {
+        "order": 2,
+        "command": "cd CAWM-Mamba",
+        "description": "Navigate into the repository directory"
+      },
+      {
+        "order": 3,
+        "command": "pip install torch torchvision timm einops pytorch-wavelets pywt mamba-ssm",
+        "description": "Install core dependencies"
+      },
+      {
+        "order": 4,
+        "command": "pip install -r requirements.txt",
+        "description": "Install any additional dependencies listed in requirements.txt (if available)"
+      },
+      {
+        "order": 5,
+        "command": "Download pre-trained models from Baidu Cloud links",
+        "description": "Download pre-trained models for inference or fine-tuning"
+      }
+    ],
+    "one_liner_possible": false,
+    "one_liner_command": null,
+    "readme_quality": "excellent",
+    "potential_blockers": [
+      "The `requirements.txt` file is mentioned but not provided in the file tree, so manual installation of dependencies might be necessary.",
+      "Baidu Cloud links might be inaccessible or slow depending on the user's location.",
+      "The dataset structure is described, but the actual datasets are not included and need to be acquired separately."
+    ],
+    "summary": "This repository provides a PyTorch implementation for CAWM-Mamba, a model for image fusion and compound adverse weather restoration. The setup involves cloning the repo, installing several key Python packages (PyTorch, mamba-ssm, etc.), and optionally downloading pre-trained models. While the README is comprehensive, the absence of a `requirements.txt` file and the reliance on external cloud storage for models are minor hurdles."
+  },
+  {
+    "repo_name": "CENet",
+    "model_used": "gemini-2.5-flash-lite",
+    "overall_ease_score": 4,
+    "ease_label": "hard",
+    "has_lockfile": false,
+    "has_checkpoint": false,
+    "key_dependencies": [
+      {
+        "name": "PyTorch",
+        "version_pinned": false
+      },
+      {
+        "name": "NumPy",
+        "version_pinned": false
+      },
+      {
+        "name": "Torchvision",
+        "version_pinned": false
+      },
+      {
+        "name": "Matplotlib",
+        "version_pinned": false
+      }
+    ],
+    "linked_url": [],
+    "dataset_used": [],
+    "setup_steps": [
+      {
+        "order": 1,
+        "command": "git clone https://github.com/user/CENet.git",
+        "description": "Clone the repository."
+      },
+      {
+        "order": 2,
+        "command": "cd CENet",
+        "description": "Navigate to the repository directory."
+      },
+      {
+        "order": 3,
+        "command": "pip install -r requirements.txt",
+        "description": "Install dependencies. (Note: requirements.txt is not present in the provided tree, this is an assumption based on common practice.)"
+      },
+      {
+        "order": 4,
+        "command": "python MRI-PET/train.py",
+        "description": "Start training for MRI-PET fusion."
+      },
+      {
+        "order": 5,
+        "command": "python MRI-SPECT/train.py",
+        "description": "Start training for MRI-SPECT fusion."
+      },
+      {
+        "order": 6,
+        "command": "python MRI-PET/test.py",
+        "description": "Run testing for MRI-PET fusion."
+      },
+      {
+        "order": 7,
+        "command": "python MRI-SPECT/test.py",
+        "description": "Run testing for MRI-SPECT fusion."
+      }
+    ],
+    "one_liner_possible": false,
+    "one_liner_command": null,
+    "readme_quality": "good",
+    "potential_blockers": [
+      "The repository does not explicitly list dependencies or provide a `requirements.txt` file, making dependency installation uncertain.",
+      "There are no pre-trained weights or checkpoints provided, requiring training from scratch which can be time-consuming and resource-intensive.",
+      "The README does not specify the exact dataset used or provide instructions on how to obtain it, which is crucial for reproducing results.",
+      "The training and testing scripts are separate for MRI-PET and MRI-SPECT, implying potentially different data preprocessing or configurations that are not clearly documented.",
+      "The `models_weight.md` files are empty, offering no information about model weights."
+    ],
+    "summary": "This repository contains code for multimodal medical image fusion. While the README provides a good overview, the lack of a `requirements.txt` file, pre-trained weights, and clear dataset instructions makes it difficult to set up and run without significant effort. Users will likely need to infer dependencies and acquire datasets independently, and training from scratch is required."
+  },
+  {
+    "repo_name": "CLTE",
+    "model_used": "gemini-2.5-flash-lite",
+    "overall_ease_score": 7,
+    "ease_label": "easy",
+    "has_lockfile": false,
+    "has_checkpoint": false,
+    "key_dependencies": [],
+    "linked_url": [
+      {
+        "url": "https://pan.baidu.com/s/1LrKpNiz4aX0MiWMTkOcLyQ",
+        "description": "Baidu Cloud Drive for datasets"
+      }
+    ],
+    "dataset_used": [],
+    "setup_steps": [
+      {
+        "order": 1,
+        "command": "git clone <repo_url>",
+        "description": "Clone the repository."
+      },
+      {
+        "order": 2,
+        "command": "Download datasets from the provided Baidu Cloud Drive link.",
+        "description": "Download the datasets required for the project."
+      }
+    ],
+    "one_liner_possible": false,
+    "one_liner_command": null,
+    "readme_quality": "minimal",
+    "potential_blockers": [
+      "The README only provides a link to datasets and does not include any setup instructions or dependency information.",
+      "The dataset link is to Baidu Cloud Drive, which may require specific software or account to access and download."
+    ],
+    "summary": "This repository is easy to clone, but lacks detailed setup instructions. The primary hurdle is accessing and downloading the datasets from a third-party cloud service, which might require additional steps or software."
+  },
+  {
+    "repo_name": "CM-CSAMFNet",
+    "model_used": "gemini-2.5-flash-lite",
+    "overall_ease_score": 7,
+    "ease_label": "easy",
+    "has_lockfile": false,
+    "has_checkpoint": true,
+    "key_dependencies": [
+      {
+        "name": "PyTorch",
+        "version_pinned": false
+      },
+      {
+        "name": "torchvision",
+        "version_pinned": false
+      },
+      {
+        "name": "numpy",
+        "version_pinned": false
+      },
+      {
+        "name": "scipy",
+        "version_pinned": false
+      },
+      {
+        "name": "PIL",
+        "version_pinned": false
+      }
+    ],
+    "linked_url": [],
+    "dataset_used": [],
+    "setup_steps": [
+      {
+        "order": 1,
+        "command": "git clone <repository_url>",
+        "description": "Clone the repository."
+      },
+      {
+        "order": 2,
+        "command": "pip install -r requirements.txt",
+        "description": "Install the necessary dependencies. (Assuming a requirements.txt exists or can be inferred from imports)"
+      },
+      {
+        "order": 3,
+        "command": "python main_TNO.py",
+        "description": "Run the main script for evaluation/inference."
+      }
+    ],
+    "one_liner_possible": false,
+    "one_liner_command": null,
+    "readme_quality": "minimal",
+    "potential_blockers": [
+      "No explicit `requirements.txt` file found, manual installation of dependencies might be needed.",
+      "The README is very minimal and lacks detailed setup instructions or usage examples.",
+      "Dataset preparation and placement are not clearly described."
+    ],
+    "summary": "This repository contains code for CM-CSAMFNet. While the code structure is somewhat organized and includes pre-trained models, the README is minimal, lacking explicit dependency lists and clear setup instructions, which may require some effort for a new developer to get running."
+  },
+  {
+    "repo_name": "CMI-Fusion",
+    "model_used": "gemini-2.5-flash-lite",
+    "overall_ease_score": 7,
+    "ease_label": "easy",
+    "has_lockfile": false,
+    "has_checkpoint": false,
+    "key_dependencies": [
+      {
+        "name": "PyTorch",
+        "version_pinned": false
+      },
+      {
+        "name": "CLIP",
+        "version_pinned": false
+      }
+    ],
+    "linked_url": [],
+    "dataset_used": [],
+    "setup_steps": [
+      {
+        "order": 1,
+        "command": "git clone <repository_url>",
+        "description": "Clone the repository."
+      },
+      {
+        "order": 2,
+        "command": "pip install -r requirements.txt",
+        "description": "Install dependencies. (Assuming a requirements.txt file exists, though not shown in the tree)."
+      },
+      {
+        "order": 3,
+        "command": "python src/test.py",
+        "description": "Run the test script to verify the setup."
+      }
+    ],
+    "one_liner_possible": false,
+    "one_liner_command": null,
+    "readme_quality": "minimal",
+    "potential_blockers": [
+      "The README is very minimal and lacks specific instructions for setup or running the code.",
+      "No `requirements.txt` or lock file is present in the provided tree, making dependency management uncertain.",
+      "The exact dependencies (like specific versions of PyTorch or CLIP) are not listed, which could lead to compatibility issues."
+    ],
+    "summary": "This repository is relatively easy to set up, assuming standard Python development practices. Cloning the repo and installing dependencies (if a `requirements.txt` is provided or can be inferred) should be straightforward. However, the minimal README and lack of explicit dependency files increase the risk of encountering setup issues."
+  },
+  {
+    "repo_name": "CMMDL",
+    "model_used": "gemini-2.5-flash-lite",
+    "overall_ease_score": 6,
+    "ease_label": "moderate",
+    "has_lockfile": false,
+    "has_checkpoint": true,
+    "key_dependencies": [
+      {
+        "name": "PyTorch",
+        "version_pinned": false
+      },
+      {
+        "name": "torchvision",
+        "version_pinned": false
+      },
+      {
+        "name": "Restormer",
+        "version_pinned": false
+      }
+    ],
+    "linked_url": [
+      {
+        "url": "https://github.com/Linfeng-Tang/PIAFusion",
+        "description": "MSRS dataset"
+      },
+      {
+        "url": "https://github.com/bupt-ai-cz/LLVIP",
+        "description": "LLVIP dataset"
+      },
+      {
+        "url": "https://figshare.com/articles/dataset/TNO_Image_Fusion_Dataset/1008029",
+        "description": "TNO dataset"
+      },
+      {
+        "url": "https://github.com/dlut-dimt/TarDAL",
+        "description": "M3FD dataset"
+      },
+      {
+        "url": "https://drive.google.com/file/d/1Kc2ZbMY4DQR9FT3shTdcQObjDlboo-Lr/view?usp=drive_link",
+        "description": "Processed MSRS_Train dataset"
+      }
+    ],
+    "dataset_used": [
+      "MSRS",
+      "LLVIP",
+      "TNO",
+      "M3FD"
+    ],
+    "setup_steps": [
+      {
+        "order": 1,
+        "command": "git clone <repository_url>",
+        "description": "Clone the repository."
+      },
+      {
+        "order": 2,
+        "command": "pip install -r requirements.txt",
+        "description": "Install dependencies. (Note: requirements.txt is not present, manual installation might be needed based on imports)"
+      },
+      {
+        "order": 3,
+        "command": "Download datasets from provided links and place them in the './data/' directory.",
+        "description": "Download and organize datasets."
+      },
+      {
+        "order": 4,
+        "command": "Modify 'CMMDL_train.py' to set dataset and weight paths.",
+        "description": "Configure training script paths."
+      },
+      {
+        "order": 5,
+        "command": "torchrun --nnodes=1 --nproc_per_node 2 CMMDL_train.py",
+        "description": "Start the training process."
+      },
+      {
+        "order": 6,
+        "command": "python CMMDL_test.py",
+        "description": "Run the testing script."
+      }
+    ],
+    "one_liner_possible": false,
+    "one_liner_command": null,
+    "readme_quality": "good",
+    "potential_blockers": [
+      "The repository does not include a `requirements.txt` file, which means dependencies will need to be identified and installed manually.",
+      "The training script requires manual modification of paths for datasets and weights.",
+      "The provided training command uses `torchrun`, which might require specific distributed training setup or understanding.",
+      "The dataset links are external and require manual download and organization."
+    ],
+    "summary": "This repository provides code for Cross-Modal Multi-Domain Learning for Image Fusion. While the README is informative and provides clear commands for training and testing, the lack of a requirements file and the need for manual path configuration in scripts make setup moderately difficult. External dataset downloads are also required."
+  },
+  {
+    "repo_name": "CoRFusion",
+    "model_used": "gemini-2.5-flash-lite",
+    "overall_ease_score": 2,
+    "ease_label": "very hard",
+    "has_lockfile": false,
+    "has_checkpoint": false,
+    "key_dependencies": [
+      {
+        "name": "PyTorch",
+        "version_pinned": false
+      }
+    ],
+    "linked_url": [],
+    "dataset_used": [],
+    "setup_steps": [
+      {
+        "order": 1,
+        "command": "git clone <repo_url>",
+        "description": "Clone the repository."
+      },
+      {
+        "order": 2,
+        "command": "pip install -r requirements.txt",
+        "description": "Install dependencies. (Note: requirements.txt is not present in the tree)"
+      },
+      {
+        "order": 3,
+        "command": "python setup.py",
+        "description": "Set up the project. (Note: setup.py is not present in the tree)"
+      },
+      {
+        "order": 4,
+        "command": "Download pre-trained weights",
+        "description": "Download pre-trained weights (Note: Weights are not yet available)."
+      },
+      {
+        "order": 5,
+        "command": "Download datasets",
+        "description": "Download datasets (Note: Datasets are not yet available)."
+      },
+      {
+        "order": 6,
+        "command": "python train.py",
+        "description": "Train the model (Note: train.py is not present in the tree)."
+      },
+      {
+        "order": 7,
+        "command": "python test.py",
+        "description": "Test the model (Note: test.py is not present in the tree)."
+      }
+    ],
+    "one_liner_possible": false,
+    "one_liner_command": null,
+    "readme_quality": "minimal",
+    "potential_blockers": [
+      "No requirements.txt file found, making dependency installation difficult.",
+      "No setup.py or equivalent found for project setup.",
+      "No training or testing scripts (e.g., train.py, test.py) are present.",
+      "Pre-trained weights and datasets are not yet available, preventing immediate use or testing.",
+      "The README explicitly states that code, weights, and datasets will be available soon, indicating the repository is incomplete."
+    ],
+    "summary": "This repository is currently incomplete and very difficult to run. The README indicates that the source code, pre-trained weights, and datasets are not yet available. Essential files like requirements.txt and training/testing scripts are missing, making it impossible to set up or run the project at this time."
+  },
+  {
+    "repo_name": "DeDNet",
+    "model_used": "gemini-2.5-flash-lite",
+    "overall_ease_score": 6,
+    "ease_label": "moderate",
+    "has_lockfile": false,
+    "has_checkpoint": true,
+    "key_dependencies": [
+      {
+        "name": "torch",
+        "version_pinned": true
+      },
+      {
+        "name": "torchvision",
+        "version_pinned": true
+      },
+      {
+        "name": "numpy",
+        "version_pinned": true
+      },
+      {
+        "name": "Pillow",
+        "version_pinned": true
+      }
+    ],
+    "linked_url": [
+      {
+        "url": "https://www.sciencedirect.com/science/article/abs/pii/S0263224124009771",
+        "description": "Paper"
+      },
+      {
+        "url": "https://drive.google.com/drive/folders/1Pu_f3XkrU3-dZZYvFmmfauyGwGWYZ__Z?usp=sharing",
+        "description": "Pre-trained Checkpoint"
+      },
+      {
+        "url": "https://arxiv.org/pdf/2404.17747.pdf",
+        "description": "Related Work MMA-UNet"
+      }
+    ],
+    "dataset_used": [
+      "Infrared-Visible Image Fusion (IVIF)"
+    ],
+    "setup_steps": [
+      {
+        "order": 1,
+        "command": "conda create -n dednet python=3.9",
+        "description": "Create a virtual environment (e.g., using conda)."
+      },
+      {
+        "order": 2,
+        "command": "conda activate dednet",
+        "description": "Activate the virtual environment."
+      },
+      {
+        "order": 3,
+        "command": "pip install torch==1.12.1 torchvision==0.13.1 numpy==1.24.2 Pillow==8.4.0",
+        "description": "Install required Python packages."
+      },
+      {
+        "order": 4,
+        "command": "Download checkpoint from provided Google Drive link and place it in the corresponding folder.",
+        "description": "Download and prepare pre-trained checkpoint."
+      },
+      {
+        "order": 5,
+        "command": "Download the Infrared-Visible Image Fusion (IVIF) dataset and place the paired images in your own path.",
+        "description": "Prepare the dataset."
+      },
+      {
+        "order": 6,
+        "command": "CUDA_VISIBLE_DEVICES=0 python test.py",
+        "description": "Run inference after adjusting args.ir_dir and args.vi_dir in test.py for your dataset path."
+      }
+    ],
+    "one_liner_possible": false,
+    "one_liner_command": null,
+    "readme_quality": "good",
+    "potential_blockers": [
+      "Requires specific versions of PyTorch and torchvision, which might conflict with other projects.",
+      "Dataset needs to be downloaded separately and placed in a user-defined path.",
+      "Checkpoint download requires manual intervention and placement.",
+      "The `test.py` script requires manual modification of file paths for inference."
+    ],
+    "summary": "This repository provides code for DeDNet, a network for infrared and visible image fusion with noise removal. Setting up involves creating a virtual environment, installing specific package versions, downloading a pre-trained checkpoint, and preparing a dataset. Inference can be run with a single command after adjusting file paths in the `test.py` script."
+  },
+  {
+    "repo_name": "Diff-IF",
+    "model_used": "gemini-2.5-flash-lite",
+    "overall_ease_score": 6,
+    "ease_label": "moderate",
+    "has_lockfile": true,
+    "has_checkpoint": true,
+    "key_dependencies": [
+      {
+        "name": "pytorch",
+        "version_pinned": true
+      },
+      {
+        "name": "torchvision",
+        "version_pinned": true
+      },
+      {
+        "name": "cuda",
+        "version_pinned": true
+      },
+      {
+        "name": "python",
+        "version_pinned": false
+      }
+    ],
+    "linked_url": [
+      {
+        "url": "https://www.sciencedirect.com/science/article/pii/S1566253524002288",
+        "description": "Paper"
+      },
+      {
+        "url": "https://github.com/XunpengYi/Diff-IF",
+        "description": "Code"
+      },
+      {
+        "url": "https://www.mi.t.utokyo.ac.jp/static/projects/mil_multispectral/",
+        "description": "MFNet dataset"
+      },
+      {
+        "url": "https://github.com/hanna-xu/RoadScene",
+        "description": "RoadScene dataset"
+      },
+      {
+        "url": "https://github.com/bupt-ai-cz/LLVIP",
+        "description": "LLVIP dataset"
+      },
+      {
+        "url": "https://drive.google.com/file/d/18UBD4C9w-KNvAF1oowSV0dMTYbj6NdF-/view?usp=sharing",
+        "description": "Pretrain weights for infrared and visible image fusion (Google Drive)"
+      },
+      {
+        "url": "https://pan.baidu.com/s/1yc-pvp_Ow8slS-RufzOwdg",
+        "description": "Pretrain weights for infrared and visible image fusion (Baidu Drive)"
+      },
+      {
+        "url": "https://drive.google.com/file/d/1R3k_AEQ0TDrNuHoep_83G_omGg90xoPu/view?usp=sharing",
+        "description": "Pretrain weights for medical image fusion (Google Drive)"
+      },
+      {
+        "url": "https://pan.baidu.com/s/10CJEWmCozWnt0Ik2fCXLqQ",
+        "description": "Pretrain weights for medical image fusion (Baidu Drive)"
+      },
+      {
+        "url": "https://github.com/hanna-xu/U2Fusion",
+        "description": "U2Fusion for training"
+      },
+      {
+        "url": "https://github.com/JinyuanLiu-CV/TarDAL",
+        "description": "TarDAL for training"
+      },
+      {
+        "url": "https://github.com/Zhaozixiang1228/MMIF-DDFM",
+        "description": "DDFM for training"
+      },
+      {
+        "url": "https://github.com/wdzhao123/MetaFusion",
+        "description": "MetaFusion for training"
+      }
+    ],
+    "dataset_used": [
+      "MFNet",
+      "RoadScene",
+      "LLVIP"
+    ],
+    "setup_steps": [
+      {
+        "order": 1,
+        "command": "conda create -n diffif_env python=3.9",
+        "description": "Create a conda environment named 'diffif_env' with Python 3.9."
+      },
+      {
+        "order": 2,
+        "command": "conda activate diffif_env",
+        "description": "Activate the created conda environment."
+      },
+      {
+        "order": 3,
+        "command": "conda install pytorch==2.0.0 torchvision==0.15.0 pytorch-cuda=11.8 -c pytorch -c nvidia",
+        "description": "Install PyTorch, Torchvision, and CUDA toolkit with specific versions."
+      },
+      {
+        "order": 4,
+        "command": "pip install -r requirements.txt",
+        "description": "Install remaining dependencies from the requirements.txt file."
+      },
+      {
+        "order": 5,
+        "command": "Download pretrain weights and place them in the 'weights' folder.",
+        "description": "Download and place the pre-trained weights into the 'weights' directory."
+      },
+      {
+        "order": 6,
+        "command": "Prepare your dataset and place it in the 'dataset' folder according to the specified structure.",
+        "description": "Organize your dataset in the 'dataset' folder as per the README instructions."
+      }
+    ],
+    "one_liner_possible": false,
+    "one_liner_command": null,
+    "readme_quality": "excellent",
+    "potential_blockers": [
+      "Specific PyTorch and CUDA versions are recommended, which might conflict with existing system configurations.",
+      "Dataset preparation requires understanding specific folder structures for different fusion tasks.",
+      "Training requires constructing a 'fusion knowledge prior', which is not directly provided and may require external tools or custom implementation.",
+      "The README mentions referring to other methods for fusion knowledge prior construction, implying additional research or setup steps."
+    ],
+    "summary": "This repository provides a diffusion model for multi-modality image fusion. Setting up the environment involves creating a conda environment and installing specific versions of PyTorch and other dependencies. While testing is straightforward with pre-trained weights, training requires significant effort in preparing a 'fusion knowledge prior' dataset, which is not fully automated."
+  },
+  {
+    "repo_name": "DMF-LP",
+    "model_used": "gemini-2.5-flash-lite",
+    "overall_ease_score": 7,
+    "ease_label": "easy",
+    "has_lockfile": false,
+    "has_checkpoint": false,
+    "key_dependencies": [
+      {
+        "name": "PyTorch",
+        "version_pinned": false
+      },
+      {
+        "name": "NumPy",
+        "version_pinned": false
+      },
+      {
+        "name": "torchvision",
+        "version_pinned": false
+      }
+    ],
+    "linked_url": [],
+    "dataset_used": [],
+    "setup_steps": [
+      {
+        "order": 1,
+        "command": "git clone https://github.com/user/DMF-LP.git",
+        "description": "Clone the repository."
+      },
+      {
+        "order": 2,
+        "command": "cd DMF-LP",
+        "description": "Navigate to the repository directory."
+      },
+      {
+        "order": 3,
+        "command": "pip install -r requirements.txt",
+        "description": "Install dependencies. (Assuming requirements.txt exists, though not shown in tree)"
+      },
+      {
+        "order": 4,
+        "command": "python train.py",
+        "description": "Run the training script."
+      }
+    ],
+    "one_liner_possible": false,
+    "one_liner_command": null,
+    "readme_quality": "minimal",
+    "potential_blockers": [
+      "The README is very minimal and lacks setup instructions or details on dependencies. A `requirements.txt` file is assumed but not present in the provided tree.",
+      "No explicit mention of datasets used for training.",
+      "No pre-trained checkpoints are provided, requiring training from scratch."
+    ],
+    "summary": "This repository is relatively easy to set up, assuming standard Python development practices. The main challenge is the lack of detailed instructions and a `requirements.txt` file in the README, requiring the user to infer dependencies and setup steps. Training from scratch is necessary as no checkpoints are provided."
+  },
+  {
+    "repo_name": "Enhanced-Multimodal-Medical-Image-Fusion-A-Hybrid-SWT-and-Saliency-Guided-Refinement-Approach",
+    "model_used": "gemini-2.5-flash-lite",
+    "overall_ease_score": 7,
+    "ease_label": "easy",
+    "has_lockfile": false,
+    "has_checkpoint": false,
+    "key_dependencies": [
+      {
+        "name": "MATLAB",
+        "version_pinned": false
+      }
+    ],
+    "linked_url": [],
+    "dataset_used": [],
+    "setup_steps": [
+      {
+        "order": 1,
+        "command": "git clone https://github.com/user/repo.git",
+        "description": "Clone the repository."
+      },
+      {
+        "order": 2,
+        "command": "matlab -nosplash -nodesktop -r \"run('SWTSWR_Code.m');\"",
+        "description": "Run the main MATLAB script."
+      }
+    ],
+    "one_liner_possible": false,
+    "one_liner_command": null,
+    "readme_quality": "minimal",
+    "potential_blockers": [
+      "Requires MATLAB installation.",
+      "No explicit dependency versions are pinned, which could lead to compatibility issues with future MATLAB releases."
+    ],
+    "summary": "This repository contains a MATLAB script for medical image fusion. Running it requires a MATLAB installation and executing the provided .m file. While straightforward for users with MATLAB, the lack of explicit dependency versioning is a minor concern."
+  },
+  {
+    "repo_name": "FDFusion",
+    "model_used": "gemini-2.5-flash-lite",
+    "overall_ease_score": 4,
+    "ease_label": "hard",
+    "has_lockfile": false,
+    "has_checkpoint": false,
+    "key_dependencies": [
+      {
+        "name": "MATLAB",
+        "version_pinned": false
+      }
+    ],
+    "linked_url": [
+      {
+        "url": "https://github.com/user-attachments/assets/79b8c448-62d5-4698-be91-e5bfceb43f2f",
+        "description": "Framework diagram"
+      },
+      {
+        "url": "https://github.com/user-attachments/assets/2450e720-ec01-452f-98b1-f2bf42a2ff73",
+        "description": "Experimental results"
+      }
+    ],
+    "dataset_used": [],
+    "setup_steps": [
+      {
+        "order": 1,
+        "command": "git clone <repository_url>",
+        "description": "Clone the repository."
+      },
+      {
+        "order": 2,
+        "command": "Add the FDFusion directory to MATLAB's path.",
+        "description": "Ensure MATLAB can find the project files."
+      },
+      {
+        "order": 3,
+        "command": "Run main_final.m",
+        "description": "Execute the main script to perform image fusion."
+      }
+    ],
+    "one_liner_possible": false,
+    "one_liner_command": null,
+    "readme_quality": "good",
+    "potential_blockers": [
+      "Requires MATLAB and its toolboxes, which are not explicitly listed but implied by the .m files and .mex files.",
+      "The repository contains several sub-folders with their own 'make.m' files, suggesting potential compilation steps for MEX files that are not clearly documented for a new user.",
+      "No explicit mention of required MATLAB toolboxes (e.g., Image Processing Toolbox, Signal Processing Toolbox).",
+      "The 'readme.txt' files within subdirectories are minimal and do not provide setup instructions for the main project.",
+      "The main README.md points to 'main_final.m' but doesn't detail its dependencies or how to run it beyond stating 'run it'."
+    ],
+    "summary": "This repository contains MATLAB code for a multi-modality image fusion method. Running the code requires cloning the repository and ensuring MATLAB can access the project files. The primary execution script is 'main_final.m', but the setup is not fully detailed, and potential compilation of MEX files might be necessary, making it moderately difficult to get running without prior knowledge of MATLAB development."
+  },
+  {
+    "repo_name": "FRAC-HCM",
+    "model_used": "gemini-2.5-flash-lite",
+    "overall_ease_score": 6,
+    "ease_label": "moderate",
+    "has_lockfile": false,
+    "has_checkpoint": false,
+    "key_dependencies": [
+      {
+        "name": "MATLAB",
+        "version_pinned": false
+      }
+    ],
+    "linked_url": [
+      {
+        "url": "https://www.sciencedirect.com/science/article/abs/pii/S1746809425007608",
+        "description": "Paper"
+      },
+      {
+        "url": "https://github.com/YimeiZheng/FRAC-HCM",
+        "description": "Source code"
+      }
+    ],
+    "dataset_used": [],
+    "setup_steps": [
+      {
+        "order": 1,
+        "command": "git clone https://github.com/YimeiZheng/FRAC-HCM.git",
+        "description": "Clone the repository."
+      },
+      {
+        "order": 2,
+        "command": "Open MATLAB",
+        "description": "Launch the MATLAB environment."
+      },
+      {
+        "order": 3,
+        "command": "Navigate to the repository directory in MATLAB",
+        "description": "Change the current directory in MATLAB to the cloned repository's root folder."
+      },
+      {
+        "order": 4,
+        "command": "Run one of the main scripts (e.g., main_CT_MRI_or_GAD_MRI.m)",
+        "description": "Execute the script corresponding to the desired image fusion task."
+      },
+      {
+        "order": 5,
+        "command": "Input image paths when prompted",
+        "description": "Provide the file paths for the source images (ImgA and ImgB) when the script requests them."
+      }
+    ],
+    "one_liner_possible": false,
+    "one_liner_command": null,
+    "readme_quality": "excellent",
+    "potential_blockers": [
+      "Requires MATLAB, which is a commercial software and may not be readily available to all users.",
+      "The README does not specify exact MATLAB version requirements or any toolboxes that might be needed.",
+      "No example images are provided, so users need to source their own multimodal medical images."
+    ],
+    "summary": "This repository contains MATLAB code for medical image fusion. Running it requires a MATLAB installation and the user to provide their own medical image datasets. The README is excellent and clearly outlines the different fusion scripts and their usage, but the dependency on MATLAB and lack of sample data makes it moderately easy to get started."
+  },
+  {
+    "repo_name": "FS-Diff",
+    "model_used": "gemini-2.5-flash-lite",
+    "overall_ease_score": 7,
+    "ease_label": "easy",
+    "has_lockfile": true,
+    "has_checkpoint": false,
+    "key_dependencies": [
+      {
+        "name": "PyTorch",
+        "version_pinned": false
+      },
+      {
+        "name": "torchvision",
+        "version_pinned": false
+      },
+      {
+        "name": "numpy",
+        "version_pinned": false
+      },
+      {
+        "name": "Pillow",
+        "version_pinned": false
+      },
+      {
+        "name": "tqdm",
+        "version_pinned": false
+      },
+      {
+        "name": "wandb",
+        "version_pinned": false
+      }
+    ],
+    "linked_url": [
+      {
+        "url": "https://arxiv.org/abs/2509.09427",
+        "description": "Arxiv paper link"
+      },
+      {
+        "url": "https://www.sciencedirect.com/science/article/abs/pii/S1566253525002192?via%3Dihub",
+        "description": "Elsevier paper link"
+      },
+      {
+        "url": "https://drive.google.com/drive/folders/10N7X3N-aM3qbwXHOkUXckia9EvL1Kjq3?usp=sharing",
+        "description": "Dataset download link (Google Drive)"
+      },
+      {
+        "url": "https://pan.baidu.com/s/1k2x70FSdWtKpwwh8Kh0GVA?pwd=idrs",
+        "description": "Dataset download link (Baidu Yun)"
+      }
+    ],
+    "dataset_used": [
+      "AVMS Dataset"
+    ],
+    "setup_steps": [
+      {
+        "order": 1,
+        "command": "pip install -r requirement.txt",
+        "description": "Install project dependencies."
+      }
+    ],
+    "one_liner_possible": false,
+    "one_liner_command": null,
+    "readme_quality": "good",
+    "potential_blockers": [
+      "The `requirement.txt` file might contain dependencies that are not pinned to specific versions, potentially leading to compatibility issues.",
+      "The dataset download links are provided, but the dataset itself is not included in the repository, requiring a separate download step.",
+      "The `infer.py` and `sr.py` scripts require configuration files (`-c [config file]`) which are not provided in the repository structure, meaning users would need to create or obtain these."
+    ],
+    "summary": "This repository is relatively easy to set up, requiring a single pip install command. However, users need to download the dataset separately and obtain or create necessary configuration files for inference and training. The lack of pinned dependencies in `requirement.txt` could pose minor compatibility risks."
+  },
+  {
+    "repo_name": "GL2T-Diff",
+    "model_used": "gemini-2.5-flash-lite",
+    "overall_ease_score": 6,
+    "ease_label": "moderate",
+    "has_lockfile": true,
+    "has_checkpoint": false,
+    "key_dependencies": [
+      {
+        "name": "torch",
+        "version_pinned": true
+      },
+      {
+        "name": "torchvision",
+        "version_pinned": true
+      },
+      {
+        "name": "numpy",
+        "version_pinned": false
+      },
+      {
+        "name": "opencv-python",
+        "version_pinned": false
+      },
+      {
+        "name": "tqdm",
+        "version_pinned": false
+      },
+      {
+        "name": "tensorboard",
+        "version_pinned": false
+      },
+      {
+        "name": "scikit-image",
+        "version_pinned": false
+      },
+      {
+        "name": "medpy",
+        "version_pinned": false
+      }
+    ],
+    "linked_url": [
+      {
+        "url": "https://github.com/ermongroup/ddim",
+        "description": "DDIM repository"
+      }
+    ],
+    "dataset_used": [
+      "BraTS 2020/2024 dataset",
+      "IXI – Information eXtraction from Images",
+      "Pelvic Dataset"
+    ],
+    "setup_steps": [
+      {
+        "order": 1,
+        "command": "git clone https://github.com/user/GL2T-Diff.git",
+        "description": "Clone the repository."
+      },
+      {
+        "order": 2,
+        "command": "pip install -r requirements.txt",
+        "description": "Install all the required Python packages."
+      },
+      {
+        "order": 3,
+        "command": "mkdir data && cd data && <download_and_extract_datasets>",
+        "description": "Download and prepare the datasets, placing them in the 'data/' directory."
+      },
+      {
+        "order": 4,
+        "command": "python main.py --config {DATASET}.yml --dataset {DATASET_NAME} --exp {PROJECT_PATH} --doc {MODEL_NAME} --scheduler_type {SAMPLING STRATEGY} --timesteps {STEPS}",
+        "description": "Train or sample a GL2T-Diff model using the specified configuration."
+      },
+      {
+        "order": 5,
+        "command": "python ddpm_main.py --config {DATASET}.yml --dataset {DATASET_NAME} --exp {PROJECT_PATH} --doc {MODEL_NAME} --timesteps {STEPS}",
+        "description": "Train or sample a DDPM model using the specified configuration."
+      }
+    ],
+    "one_liner_possible": false,
+    "one_liner_command": null,
+    "readme_quality": "good",
+    "potential_blockers": [
+      "The README mentions downloading processed datasets or from official websites, but does not provide direct links or clear instructions for all datasets. The user needs to find and prepare these datasets themselves.",
+      "The usage examples for training/sampling require filling in several placeholders like {DATASET}, {DATASET_NAME}, {PROJECT_PATH}, {MODEL_NAME}, {SAMPLING STRATEGY}, and {STEPS}, which might require some investigation to determine the correct values.",
+      "The repository does not explicitly provide pre-trained checkpoints, meaning users will likely need to train models from scratch, which can be time-consuming."
+    ],
+    "summary": "This repository provides code for GL2T-Diff, a diffusion model for medical image translation. Setting it up requires cloning the repo, installing dependencies via `requirements.txt`, and manually downloading and organizing datasets. While the README provides clear commands for training and sampling, users need to figure out dataset sources and fill in command-line arguments, making it a moderately easy setup."
+  },
+  {
+    "repo_name": "ISFM",
+    "model_used": "gemini-2.5-flash-lite",
+    "overall_ease_score": 6,
+    "ease_label": "moderate",
+    "has_lockfile": true,
+    "has_checkpoint": true,
+    "key_dependencies": [
+      {
+        "name": "Python",
+        "version_pinned": false
+      },
+      {
+        "name": "PyTorch",
+        "version_pinned": true
+      },
+      {
+        "name": "mamba-ssm",
+        "version_pinned": true
+      },
+      {
+        "name": "CUDA",
+        "version_pinned": true
+      }
+    ],
+    "linked_url": [
+      {
+        "url": "https://arxiv.org/abs/2602.04405",
+        "description": "arXiv paper link"
+      },
+      {
+        "url": "https://www.python.org/",
+        "description": "Python language link"
+      },
+      {
+        "url": "https://pytorch.org/",
+        "description": "PyTorch framework link"
+      },
+      {
+        "url": "https://github.com/state-spaces/mamba",
+        "description": "Mamba library link"
+      },
+      {
+        "url": "https://opensource.org/licenses/MIT",
+        "description": "MIT License link"
+      },
+      {
+        "url": "https://ieeexplore.ieee.org/document/11396436",
+        "description": "TIP 2026 Paper link"
+      },
+      {
+        "url": "https://github.com/Namn23",
+        "description": "Author Yixin Zhu GitHub link"
+      },
+      {
+        "url": "https://scholar.google.com/citations?user=MfbIbuEAAAAJ&hl=zh-CN",
+        "description": "Author Pingping Zhang Google Scholar link"
+      },
+      {
+        "url": "https://scholar.google.com/citations?user=6R4C_6wAAAAJ&hl=zh-CN&oi=sra",
+        "description": "Author Xuehu Liu Google Scholar link"
+      },
+      {
+        "url": "https://scholar.google.com/citations?hl=zh-CN&user=D3nE0agAAAAJ",
+        "description": "Author Huchuan Lu Google Scholar link"
+      },
+      {
+        "url": "https://github.com/Linfeng-Tang/MSRS",
+        "description": "MSRS dataset download link"
+      },
+      {
+        "url": "https://github.com/hanna-xu/RoadScene",
+        "description": "RoadScene dataset download link"
+      },
+      {
+        "url": "https://github.com/JinyuanLiu-CV/SegMiF",
+        "description": "FMB dataset download link"
+      },
+      {
+        "url": "https://www.med.harvard.edu/AANLIB/home.html",
+        "description": "Harvard dataset download link"
+      }
+    ],
+    "dataset_used": [
+      "MSRS",
+      "RoadScene",
+      "FMB",
+      "Harvard"
+    ],
+    "setup_steps": [
+      {
+        "order": 1,
+        "command": "conda create -n ISFM python=3.8 -y",
+        "description": "Create a conda virtual environment named ISFM with Python 3.8."
+      },
+      {
+        "order": 2,
+        "command": "conda activate ISFM",
+        "description": "Activate the created conda environment."
+      },
+      {
+        "order": 3,
+        "command": "pip install -r requirements.txt",
+        "description": "Install all project dependencies listed in requirements.txt."
+      },
+      {
+        "order": 4,
+        "command": "Download datasets and organize them in the specified directory structure.",
+        "description": "Download the required datasets (MSRS, RoadScene, FMB, Harvard) and place them in the 'data/' directory with 'train/vi', 'train/ir', 'test/vi', 'test/ir' subfolders."
+      },
+      {
+        "order": 5,
+        "command": "Modify config files (e.g., configs/train.yaml, configs/test.yaml) to set the correct dataset root directory.",
+        "description": "Update the 'INPUT.ROOT_DIR' path in the configuration files to point to the location of the downloaded datasets."
+      }
+    ],
+    "one_liner_possible": false,
+    "one_liner_command": null,
+    "readme_quality": "excellent",
+    "potential_blockers": [
+      "Requires specific CUDA version (11.7) and PyTorch version (2.0.1), which might conflict with other projects or system configurations.",
+      "Dataset download links are provided, but users need to manually download and organize them into the correct directory structure.",
+      "The README mentions 'mamba-ssm 1.2.0' as a requirement, but the `requirements.txt` file is not provided for inspection, so it's unclear if this is correctly handled by pip install.",
+      "The arXiv ID '2602.04405' seems to be a placeholder and not a real ID, as it's unlikely to be a future date."
+    ],
+    "summary": "This repository provides code for Multi-Modal Image Fusion using a Mamba-based framework. Setup involves creating a Python 3.8 environment, installing dependencies via pip, downloading and organizing several datasets, and configuring paths in YAML files. While the steps are clearly laid out, managing specific versions of PyTorch and CUDA, along with manual dataset handling, makes it moderately easy to run."
+  },
+  {
+    "repo_name": "LKC-FUNet",
+    "model_used": "gemini-2.5-flash-lite",
+    "overall_ease_score": 4,
+    "ease_label": "hard",
+    "has_lockfile": false,
+    "has_checkpoint": true,
+    "key_dependencies": [
+      {
+        "name": "PyTorch",
+        "version_pinned": false
+      },
+      {
+        "name": "torchvision",
+        "version_pinned": false
+      },
+      {
+        "name": "numpy",
+        "version_pinned": false
+      },
+      {
+        "name": "scikit-image",
+        "version_pinned": false
+      }
+    ],
+    "linked_url": [
+      {
+        "url": "https://www.sciencedirect.com/science/article/pii/S0031320325015663",
+        "description": "Pattern Recognition journal page for the paper"
+      }
+    ],
+    "dataset_used": [
+      "MRI-CT",
+      "MRI-PET",
+      "MRI-SPECT",
+      "MSRS"
+    ],
+    "setup_steps": [
+      {
+        "order": 1,
+        "command": "git clone https://github.com/danhe-git/LKC-FUNet.git",
+        "description": "Clone the repository."
+      },
+      {
+        "order": 2,
+        "command": "cd LKC-FUNet",
+        "description": "Navigate to the repository directory."
+      },
+      {
+        "order": 3,
+        "command": "pip install -r requirements.txt",
+        "description": "Install necessary dependencies. (Note: requirements.txt is not present in the provided file tree, so this step might fail or require manual installation of packages like PyTorch, torchvision, numpy, scikit-image)."
+      },
+      {
+        "order": 4,
+        "command": "python train.py --dataset <dataset_name> --model <model_name>",
+        "description": "Train the model. Specific dataset and model names would need to be determined from the code or documentation."
+      },
+      {
+        "order": 5,
+        "command": "python test.py --dataset <dataset_name> --model <model_name> --weights <path_to_weights>",
+        "description": "Test the model. Requires specifying dataset, model, and path to pre-trained weights (e.g., models_pth/best_MIF.pth)."
+      }
+    ],
+    "one_liner_possible": false,
+    "one_liner_command": null,
+    "readme_quality": "good",
+    "potential_blockers": [
+      "The `requirements.txt` file is missing, which is crucial for easily installing dependencies. Developers will need to manually identify and install all required Python packages.",
+      "The README does not provide explicit instructions on how to run training or testing, only general commands. Specific arguments and dataset paths would need to be inferred from the code.",
+      "The dataset structure is complex, and it's unclear how to prepare or point the scripts to these datasets for training/testing.",
+      "No explicit mention of a virtual environment setup, which is a common practice and can prevent dependency conflicts."
+    ],
+    "summary": "This repository contains code for LKC-FUNet, a model for image fusion. While the README provides a good overview and citation, the lack of a `requirements.txt` file and detailed execution instructions for training and testing makes it difficult to set up and run. Developers will need to manually install dependencies and infer command-line arguments, increasing the effort required to get started."
+  },
+  {
+    "repo_name": "LMACV",
+    "model_used": "gemini-2.5-flash-lite",
+    "overall_ease_score": 3,
+    "ease_label": "hard",
+    "has_lockfile": true,
+    "has_checkpoint": true,
+    "key_dependencies": [
+      {
+        "name": "PyTorch",
+        "version_pinned": true
+      },
+      {
+        "name": "timm",
+        "version_pinned": true
+      },
+      {
+        "name": "CUDA",
+        "version_pinned": true
+      },
+      {
+        "name": "conda",
+        "version_pinned": true
+      },
+      {
+        "name": "triton",
+        "version_pinned": true
+      },
+      {
+        "name": "causal_conv1d",
+        "version_pinned": true
+      },
+      {
+        "name": "mamba_ssm",
+        "version_pinned": true
+      }
+    ],
+    "linked_url": [
+      {
+        "url": "https://github.com/tthinking/MATR",
+        "description": "RGBtoYUV reference"
+      },
+      {
+        "url": "https://www.med.harvard.edu/AANLIB/home.html",
+        "description": "Dataset link"
+      },
+      {
+        "url": "https://github.com/liuuuuu777/ImageFusion-Evaluation",
+        "description": "Evaluation metrics code link"
+      },
+      {
+        "url": "https://github.com/MzeroMiko/VMamba",
+        "description": "Mamba framework reference"
+      },
+      {
+        "url": "https://github.com/wangzi487794504/Image-fusion",
+        "description": "MPCT reference"
+      }
+    ],
+    "dataset_used": [
+      "MATR",
+      "med.harvard.edu/AANLIB",
+      "ImageFusion-Evaluation",
+      "VMamba",
+      "MPCT"
+    ],
+    "setup_steps": [
+      {
+        "order": 1,
+        "command": "conda create -n vmamba python=3.8",
+        "description": "Create a new conda environment named 'vmamba'."
+      },
+      {
+        "order": 2,
+        "command": "conda activate vmamba",
+        "description": "Activate the 'vmamba' environment."
+      },
+      {
+        "order": 3,
+        "command": "pip install torch==1.13.0 torchvision==0.14.0 torchaudio==0.13.0 --extra-index-url https://download.pytorch.org/whl/cu117",
+        "description": "Install PyTorch with CUDA 11.7 support."
+      },
+      {
+        "order": 4,
+        "command": "pip install packaging",
+        "description": "Install the 'packaging' library."
+      },
+      {
+        "order": 5,
+        "command": "pip install timm==0.4.12",
+        "description": "Install the 'timm' library with a specific version."
+      },
+      {
+        "order": 6,
+        "command": "pip install pytest chardet yacs termcolor",
+        "description": "Install additional Python packages."
+      },
+      {
+        "order": 7,
+        "command": "pip install submitit tensorboardX",
+        "description": "Install more Python packages."
+      },
+      {
+        "order": 8,
+        "command": "pip install triton==2.0.0",
+        "description": "Install the 'triton' library with a specific version."
+      },
+      {
+        "order": 9,
+        "command": "pip install causal_conv1d==1.0.0",
+        "description": "Install 'causal_conv1d' (requires downloading a specific .whl file)."
+      },
+      {
+        "order": 10,
+        "command": "pip install mamba_ssm==1.0.1",
+        "description": "Install 'mamba_ssm' (requires downloading a specific .whl file)."
+      }
+    ],
+    "one_liner_possible": false,
+    "one_liner_command": null,
+    "readme_quality": "good",
+    "potential_blockers": [
+      "The core implementation of the LMACV framework is temporarily unavailable due to a patent application.",
+      "Specific .whl files for 'causal_conv1d' and 'mamba_ssm' need to be downloaded from a Baidu cloud link, which might be region-restricted or require specific download tools.",
+      "The README lists specific versions for CUDA (11.4), conda (4.10.1), Python (3.8.12), PyTorch (1.9.1), timm (0.4.12), and triton (2.0.0), but the installation instructions use PyTorch 1.13.0 and CUDA 11.7, creating a potential version conflict.",
+      "The README mentions PyTorch 1.9.1 as a requirement but the installation command uses 1.13.0. This is a significant discrepancy.",
+      "The README mentions CUDA 11.4 but the installation command uses cu117 for PyTorch, which implies CUDA 11.7. This version mismatch needs clarification.",
+      "The README mentions conda 4.10.1 but the installation command uses generic conda commands without specifying a version. This might lead to issues if the user has a significantly different conda version.",
+      "The README mentions Python 3.8.12 but the installation command uses `python=3.8`, which is generally fine but could be more precise.",
+      "The README mentions timm 0.4.12, and the installation command also specifies `timm==0.4.12`, which is consistent.",
+      "The README mentions `causal_conv1d` and `mamba_ssm` as requirements, and the installation commands also specify these with specific versions. However, the README also points to a Baidu link for the .whl files, suggesting these might not be directly installable via pip and require manual download and installation.",
+      "The presence of many configuration files and scripts within `VMamba/analyze` and `VMamba/classification` suggests a complex setup for specific tasks, which is not detailed in the README.",
+      "The repository contains pre-trained model weights (`object_detect_model_s.pt`) but no clear instructions on how to use them or where they are intended to be used.",
+      "The `Downstream` folder contains code for segmentation and detection, but the README does not provide clear instructions on how to run these specific downstream tasks."
+    ],
+    "summary": "This repository is difficult to run due to the unavailability of core code for patent reasons. While setup steps are provided, they involve manual downloading of specific .whl files from a third-party link and contain conflicting version requirements for PyTorch and CUDA, making reproducibility challenging."
+  },
+  {
+    "repo_name": "Enhanced-Multimodal-Medical-Image-Fusion-A-Hybrid-SWT-and-Saliency-Guided-Refinement-Approach",
+    "model_used": "gemini-2.5-flash-lite",
+    "overall_ease_score": 7,
+    "ease_label": "easy",
+    "has_lockfile": false,
+    "has_checkpoint": false,
+    "key_dependencies": [
+      {
+        "name": "MATLAB",
+        "version_pinned": false
+      }
+    ],
+    "linked_url": [],
+    "dataset_used": [],
+    "setup_steps": [
+      {
+        "order": 1,
+        "command": "git clone https://github.com/user/repo.git",
+        "description": "Clone the repository."
+      },
+      {
+        "order": 2,
+        "command": "matlab",
+        "description": "Open MATLAB."
+      },
+      {
+        "order": 3,
+        "command": "cd Enhanced-Multimodal-Medical-Image-Fusion-A-Hybrid-SWT-and-Saliency-Guided-Refinement-Approach",
+        "description": "Navigate to the repository directory."
+      },
+      {
+        "order": 4,
+        "command": "run SWTSWR_Code.m",
+        "description": "Execute the main MATLAB script for image fusion."
+      }
+    ],
+    "one_liner_possible": false,
+    "one_liner_command": null,
+    "readme_quality": "minimal",
+    "potential_blockers": [
+      "Requires MATLAB installation and potentially specific toolboxes.",
+      "The 'How to Run.txt' file is not provided, so instructions are inferred from the script name and file structure.",
+      "No explicit mention of dependencies or environment setup beyond MATLAB."
+    ],
+    "summary": "This repository contains MATLAB code for medical image fusion. Running it requires a MATLAB installation and executing the provided .m script. While the core functionality is accessible via a single script, the lack of detailed setup instructions and potential MATLAB toolbox dependencies makes it moderately easy to run."
+  },
+  {
+    "repo_name": "LRFNet",
+    "model_used": "gemini-2.5-flash-lite",
+    "overall_ease_score": 3,
+    "ease_label": "hard",
+    "has_lockfile": false,
+    "has_checkpoint": true,
+    "key_dependencies": [
+      {
+        "name": "PyTorch",
+        "version_pinned": false
+      }
+    ],
+    "linked_url": [],
+    "dataset_used": [],
+    "setup_steps": [
+      {
+        "order": 1,
+        "command": "git clone https://github.com/your_username/LRFNet.git",
+        "description": "Clone the repository."
+      },
+      {
+        "order": 2,
+        "command": "pip install -r requirements.txt",
+        "description": "Install dependencies. (Note: requirements.txt is not present in the provided tree, this is an assumption)"
+      },
+      {
+        "order": 3,
+        "command": "python test.py",
+        "description": "Run the test script to evaluate the model."
+      }
+    ],
+    "one_liner_possible": false,
+    "one_liner_command": null,
+    "readme_quality": "minimal",
+    "potential_blockers": [
+      "The README is very minimal and lacks setup instructions.",
+      "There is no requirements.txt file provided, making dependency installation uncertain.",
+      "The dataset used for training is not specified, and there are no instructions on how to obtain or prepare it.",
+      "The `test.py` script's functionality and expected inputs/outputs are not described."
+    ],
+    "summary": "This repository is difficult to run due to a lack of clear setup instructions and missing dependency information. The README is minimal, and crucial details about datasets and execution are absent, requiring significant effort from the user to figure out."
+  },
+  {
+    "repo_name": "M2OCNN",
+    "model_used": "gemini-2.5-flash-lite",
+    "overall_ease_score": 1,
+    "ease_label": "very hard",
+    "has_lockfile": false,
+    "has_checkpoint": false,
+    "key_dependencies": [],
+    "linked_url": [],
+    "dataset_used": [],
+    "setup_steps": [
+      {
+        "order": 1,
+        "command": "git clone <repo_url>",
+        "description": "Clone the repository."
+      },
+      {
+        "order": 2,
+        "command": "cd M2OCNN",
+        "description": "Navigate to the repository directory."
+      }
+    ],
+    "one_liner_possible": false,
+    "one_liner_command": null,
+    "readme_quality": "minimal",
+    "potential_blockers": [
+      "The README states 'Coming soon.', indicating that the project is not yet ready for use or execution.",
+      "There are no setup instructions, dependencies, or code provided in the repository.",
+      "No datasets or pre-trained models are mentioned or available."
+    ],
+    "summary": "This repository is marked as 'Coming soon.' with no provided code, setup instructions, or dependencies. It is currently impossible to run locally and would require significant development before it could be used."
+  },
+  {
+    "repo_name": "MDHU-fusion",
+    "model_used": "gemini-2.5-flash-lite",
+    "overall_ease_score": 5,
+    "ease_label": "moderate",
+    "has_lockfile": false,
+    "has_checkpoint": false,
+    "key_dependencies": [
+      {
+        "name": "MATLAB",
+        "version_pinned": false
+      }
+    ],
+    "linked_url": [],
+    "dataset_used": [],
+    "setup_steps": [
+      {
+        "order": 1,
+        "command": "git clone <repository_url>",
+        "description": "Clone the repository to your local machine."
+      },
+      {
+        "order": 2,
+        "command": "cd MDHU-fusion",
+        "description": "Navigate to the cloned repository directory."
+      },
+      {
+        "order": 3,
+        "command": "matlab -batch main.m",
+        "description": "Run the main demo script using MATLAB."
+      }
+    ],
+    "one_liner_possible": true,
+    "one_liner_command": "matlab -batch main.m",
+    "readme_quality": "good",
+    "potential_blockers": [
+      "Requires MATLAB installation, which is a commercial software.",
+      "Some functions might rely on specific MATLAB toolboxes that are not explicitly listed.",
+      "The presence of .mex files suggests compiled code, which might have platform-specific dependencies or require recompilation if not compatible with the user's system."
+    ],
+    "summary": "This repository contains MATLAB code for multi-modal medical image fusion. Running it requires a MATLAB installation and executing the `main.m` script. While the README provides a clear entry point, potential users might face issues if they lack MATLAB or if the code has unstated toolbox dependencies or platform-specific compiled components."
+  },
+  {
+    "repo_name": "MFS-Fusion",
+    "model_used": "gemini-2.5-flash-lite",
+    "overall_ease_score": 7,
+    "ease_label": "easy",
+    "has_lockfile": false,
+    "has_checkpoint": true,
+    "key_dependencies": [
+      {
+        "name": "torch",
+        "version_pinned": false
+      },
+      {
+        "name": "opencv-python",
+        "version_pinned": false
+      },
+      {
+        "name": "mamba_ssm",
+        "version_pinned": false
+      },
+      {
+        "name": "timm",
+        "version_pinned": false
+      },
+      {
+        "name": "einops",
+        "version_pinned": false
+      }
+    ],
+    "linked_url": [
+      {
+        "url": "https://www.sciencedirect.com/science/abs/pii/S095741742503670X",
+        "description": "Paper Link"
+      },
+      {
+        "url": "https://pan.baidu.com/s/15LzwkowSbawPkJhN7FDP9g?pwd=5awc",
+        "description": "Download the dataset"
+      }
+    ],
+    "dataset_used": [
+      "VIS-IR"
+    ],
+    "setup_steps": [
+      {
+        "order": 1,
+        "command": "conda create -n mfs python=3.10",
+        "description": "Create a new conda environment named 'mfs' with Python 3.10."
+      },
+      {
+        "order": 2,
+        "command": "conda activate mfs",
+        "description": "Activate the created conda environment."
+      },
+      {
+        "order": 3,
+        "command": "pip install numpy torch opencv-python torchvision matplotlib tensorboard einops mamba_ssm timm",
+        "description": "Install required Python dependencies."
+      },
+      {
+        "order": 4,
+        "command": "Download dataset from provided link",
+        "description": "Download the dataset using the provided Baidu NetDisk link."
+      },
+      {
+        "order": 5,
+        "command": "python test_unet.py",
+        "description": "Run the testing script to generate results."
+      }
+    ],
+    "one_liner_possible": false,
+    "one_liner_command": null,
+    "readme_quality": "excellent",
+    "potential_blockers": [
+      "The dataset download link uses Baidu NetDisk, which might have download speed limitations or require a specific client in some regions.",
+      "The README mentions CUDA is recommended but doesn't explicitly state if it's a hard requirement for basic functionality or just for performance."
+    ],
+    "summary": "This repository is relatively easy to set up. The README provides clear, step-by-step instructions for environment setup and dependency installation using conda and pip. It also includes a direct link for dataset download and commands for both testing and training. The main potential hurdle is the dataset download method."
+  },
+  {
+    "repo_name": "MMIF",
+    "model_used": "gemini-3.1-flash-lite",
+    "overall_ease_score": 7,
+    "ease_label": "easy",
+    "has_lockfile": true,
+    "has_checkpoint": false,
+    "key_dependencies": [
+      {
+        "name": "python",
+        "version_pinned": true
+      }
+    ],
+    "linked_url": [
+      {
+        "url": "https://github.com/xianming-gu/Havard-Medical-Image-Fusion-Datasets",
+        "description": "External repository for medical image fusion datasets"
+      }
+    ],
+    "dataset_used": [
+      "Havard-Medical-Image-Fusion-Datasets"
+    ],
+    "setup_steps": [
+      {
+        "order": 1,
+        "command": "conda create --n mmif python=3.8 && conda activate mmif",
+        "description": "Create and activate the conda environment"
+      },
+      {
+        "order": 2,
+        "command": "pip install -r requirements.txt",
+        "description": "Install project dependencies"
+      },
+      {
+        "order": 3,
+        "command": "python dataprocessing.py",
+        "description": "Run data pre-processing script"
+      },
+      {
+        "order": 4,
+        "command": "python train.py --gpu_id 0 --num_epochs 10",
+        "description": "Start the training process"
+      }
+    ],
+    "one_liner_possible": false,
+    "one_liner_command": null,
+    "readme_quality": "good",
+    "potential_blockers": [
+      "Requires manual download and placement of external datasets",
+      "Training script requires manual configuration of GPU IDs and epoch parameters",
+      "No pre-trained weights provided in the repository"
+    ],
+    "summary": "The repository is straightforward to set up with clear instructions for environment creation and data processing. While it lacks pre-trained checkpoints and requires manual dataset management, the workflow is logical and standard for a research project."
+  },
+  {
+    "repo_name": "MMIF-INet",
+    "model_used": "gemini-3.1-flash-lite",
+    "overall_ease_score": 8,
+    "ease_label": "easy",
+    "has_lockfile": false,
+    "has_checkpoint": true,
+    "key_dependencies": [
+      {
+        "name": "torch",
+        "version_pinned": false
+      },
+      {
+        "name": "torchvision",
+        "version_pinned": false
+      },
+      {
+        "name": "numpy",
+        "version_pinned": false
+      }
+    ],
+    "linked_url": [
+      {
+        "url": "https://www.sciencedirect.com/science/article/abs/pii/S1566253524004445?via%3Dihub",
+        "description": "Paper abstract"
+      },
+      {
+        "url": "https://github.com/TomTomTommi/HiNet",
+        "description": "Reference repository"
+      },
+      {
+        "url": "https://github.com/DZSYUNNAN/medicalimagefusion",
+        "description": "Reference repository"
+      }
+    ],
+    "dataset_used": [
+      "MSRS"
+    ],
+    "setup_steps": [
+      {
+        "order": 1,
+        "command": "git clone <repo-url>",
+        "description": "Clone the repository"
+      },
+      {
+        "order": 2,
+        "command": "pip install torch torchvision numpy",
+        "description": "Install necessary dependencies"
+      },
+      {
+        "order": 3,
+        "command": "python test.py",
+        "description": "Run the test script to generate fusion results"
+      }
+    ],
+    "one_liner_possible": true,
+    "one_liner_command": "python test.py",
+    "readme_quality": "good",
+    "potential_blockers": [
+      "Lack of a requirements.txt file makes dependency management manual",
+      "No explicit instructions on how to train the model, only testing is documented"
+    ],
+    "summary": "The repository is very straightforward to run for inference, as it includes pre-trained weights and a simple test script. However, it lacks a formal dependency file, requiring the user to manually install common deep learning libraries."
+  },
+  {
+    "repo_name": "MMIFprompt",
+    "model_used": "gemini-3.1-flash-lite",
+    "overall_ease_score": 1,
+    "ease_label": "very hard",
+    "has_lockfile": false,
+    "has_checkpoint": false,
+    "key_dependencies": [],
+    "linked_url": [],
+    "dataset_used": [],
+    "setup_steps": [],
+    "one_liner_possible": false,
+    "one_liner_command": null,
+    "readme_quality": "minimal",
+    "potential_blockers": [
+      "The repository contains only a README.md file.",
+      "There is no source code, installation instructions, or dependency management files.",
+      "The project appears to be empty or missing all functional components."
+    ],
+    "summary": "The repository is essentially empty, containing only a README file with no actual code or setup instructions. It is impossible to run or evaluate the project in its current state."
+  },
+  {
+    "repo_name": "MRCENet",
+    "model_used": "gemini-3.1-flash-lite",
+    "overall_ease_score": 7,
+    "ease_label": "easy",
+    "has_lockfile": false,
+    "has_checkpoint": false,
+    "key_dependencies": [
+      {
+        "name": "pytorch",
+        "version_pinned": false
+      },
+      {
+        "name": "torchvision",
+        "version_pinned": false
+      }
+    ],
+    "linked_url": [
+      {
+        "url": "https://doi.org/10.1016/j.compmedimag.2026.102737",
+        "description": "The official paper"
+      },
+      {
+        "url": "https://www.sciencedirect.com/science/article/pii/S0895611126000406",
+        "description": "ScienceDirect article page"
+      }
+    ],
+    "dataset_used": [
+      "Harvard PET-MRI dataset",
+      "Harvard MRI-SPECT dataset",
+      "Harvard MRI-CT dataset",
+      "WHU-MRI-PET dataset"
+    ],
+    "setup_steps": [
+      {
+        "order": 1,
+        "command": "git clone https://github.com/Dpw506/MRCENet.git",
+        "description": "Clone the repository"
+      },
+      {
+        "order": 2,
+        "command": "conda create -n mrcenet python=3.12.7 && conda activate mrcenet",
+        "description": "Create and activate a conda environment"
+      },
+      {
+        "order": 3,
+        "command": "pip install -r requirements.txt",
+        "description": "Install project dependencies"
+      }
+    ],
+    "one_liner_possible": false,
+    "one_liner_command": null,
+    "readme_quality": "good",
+    "potential_blockers": [
+      "No pre-trained weights provided in the repository",
+      "Dataset structure must be manually created by the user",
+      "requirements.txt does not pin specific versions, which may lead to dependency conflicts"
+    ],
+    "summary": "The repository is straightforward to set up with clear instructions for environment creation and dependency installation. However, it lacks pre-trained weights, requiring the user to perform the full training process, and the user must manually organize their own medical imaging datasets to match the expected directory structure."
+  },
+  {
+    "repo_name": "NLSF",
+    "model_used": "gemini-3.1-flash-lite",
+    "overall_ease_score": 3,
+    "ease_label": "hard",
+    "has_lockfile": false,
+    "has_checkpoint": false,
+    "key_dependencies": [
+      {
+        "name": "torch",
+        "version_pinned": true
+      },
+      {
+        "name": "python",
+        "version_pinned": true
+      }
+    ],
+    "linked_url": [
+      {
+        "url": "https://pan.baidu.com/s/1scTJ3Q_NtQoAyccY_605HA?pwd=c7kc",
+        "description": "Baidu Netdisk for training data and model weights"
+      },
+      {
+        "url": "https://forms.gle/7cE3Es533usJ4iJq7",
+        "description": "BraTS 2023 application form"
+      },
+      {
+        "url": "https://www.kaggle.com/datasets/dschettler8845/brats-2021-task1",
+        "description": "Kaggle BraTS 2021 dataset"
+      },
+      {
+        "url": "https://www.cancerimagingarchive.net/analysis-result/rsna-asnr-miccai-brats-2021/",
+        "description": "TCIA BraTS 2021 dataset"
+      }
+    ],
+    "dataset_used": [
+      "BraTS 2021"
+    ],
+    "setup_steps": [
+      {
+        "order": 1,
+        "command": "pip install torch==2.4.1",
+        "description": "Install required PyTorch version"
+      },
+      {
+        "order": 2,
+        "command": "wget/download from Baidu Netdisk",
+        "description": "Manually download the dataset and model weights from the provided Baidu link"
+      },
+      {
+        "order": 3,
+        "command": "python train_unet.py",
+        "description": "Run the first stage of training"
+      }
+    ],
+    "one_liner_possible": false,
+    "one_liner_command": null,
+    "readme_quality": "good",
+    "potential_blockers": [
+      "No requirements.txt or environment.yml file provided",
+      "Dataset and weights are hosted on Baidu Netdisk, which may be inaccessible or slow for some users",
+      "No instructions on how to structure the downloaded data within the project folder",
+      "Complex multi-stage training process requires manual execution of multiple scripts in order"
+    ],
+    "summary": "The repository lacks a dependency management file and clear data directory structure, making setup manual and error-prone. The reliance on a Baidu Netdisk link for critical model weights and datasets further complicates the onboarding process for international users."
+  },
+  {
+    "repo_name": "PSA",
+    "model_used": "gemini-2.5-flash-lite",
+    "overall_ease_score": 2,
+    "ease_label": "very hard",
+    "has_lockfile": false,
+    "has_checkpoint": false,
+    "key_dependencies": [
+      {
+        "name": "MATLAB",
+        "version_pinned": false
+      }
+    ],
+    "linked_url": [],
+    "dataset_used": [],
+    "setup_steps": [
+      {
+        "order": 1,
+        "command": "git clone <repository_url>",
+        "description": "Clone the repository."
+      },
+      {
+        "order": 2,
+        "command": "Install MATLAB",
+        "description": "Install MATLAB if not already present."
+      },
+      {
+        "order": 3,
+        "command": "Download dataset",
+        "description": "The README mentions associated data, but it's not provided. The user would need to find and download the dataset separately."
+      },
+      {
+        "order": 4,
+        "command": "Run MATLAB scripts",
+        "description": "Execute the provided MATLAB code."
+      }
+    ],
+    "one_liner_possible": false,
+    "one_liner_command": null,
+    "readme_quality": "minimal",
+    "potential_blockers": [
+      "The code is not yet publicly available, so it cannot be cloned or run.",
+      "The repository is empty, lacking any actual code or instructions on how to run it.",
+      "The README mentions associated data, but no dataset is provided or linked.",
+      "The project relies on MATLAB, which is a commercial software and may not be readily available to all developers.",
+      "No specific dependencies or environment setup instructions are provided beyond MATLAB."
+    ],
+    "summary": "This repository is currently unusable as the code is not yet available. Even when it is, it relies on MATLAB and requires external datasets that are not provided, making it difficult to set up and run."
+  },
+  {
+    "repo_name": "QWNet",
+    "model_used": "gemini-2.5-flash-lite",
+    "overall_ease_score": 7,
+    "ease_label": "easy",
+    "has_lockfile": true,
+    "has_checkpoint": false,
+    "key_dependencies": [
+      {
+        "name": "PyTorch",
+        "version_pinned": false
+      },
+      {
+        "name": "Python",
+        "version_pinned": false
+      }
+    ],
+    "linked_url": [],
+    "dataset_used": [],
+    "setup_steps": [
+      {
+        "order": 1,
+        "command": "git clone https://github.com/yourusername/QWNet.git",
+        "description": "Clone the repository"
+      },
+      {
+        "order": 2,
+        "command": "cd QWNet",
+        "description": "Navigate into the repository directory"
+      },
+      {
+        "order": 3,
+        "command": "pip install -r requirements.txt",
+        "description": "Install dependencies"
+      }
+    ],
+    "one_liner_possible": false,
+    "one_liner_command": null,
+    "readme_quality": "excellent",
+    "potential_blockers": [
+      "The README mentions 'yourusername' in the git clone URL, which needs to be replaced with the actual username or organization.",
+      "No explicit mention of how to obtain or prepare datasets for training/testing.",
+      "The README specifies PyTorch 1.13.1+, but the requirements.txt file might not pin this version, potentially leading to compatibility issues if a newer version is installed."
+    ],
+    "summary": "This repository is relatively easy to set up, requiring cloning the repo and installing dependencies via pip. The README provides clear instructions for installation and usage. However, potential blockers include the placeholder in the clone URL and the lack of information on dataset acquisition."
+  },
+  {
+    "repo_name": "SD-Fuse",
+    "model_used": "gemini-2.5-flash-lite",
+    "overall_ease_score": 7,
+    "ease_label": "easy",
+    "has_lockfile": false,
+    "has_checkpoint": true,
+    "key_dependencies": [
+      {
+        "name": "PyTorch",
+        "version_pinned": false
+      }
+    ],
+    "linked_url": [
+      {
+        "url": "https://doi.org/10.1016/j.inffus.2025.104058",
+        "description": "Paper DOI"
+      },
+      {
+        "url": "https://drive.google.com/file/d/1NrZi1GSvMPKtOHion3RPSoxq1iv8DXhE/view?usp=sharing",
+        "description": "PyTorch model weights download"
+      }
+    ],
+    "dataset_used": [
+      "MFI-WHU"
+    ],
+    "setup_steps": [
+      {
+        "order": 1,
+        "command": "git clone <repository_url>",
+        "description": "Clone the repository."
+      },
+      {
+        "order": 2,
+        "command": "python -m venv venv && source venv/bin/activate",
+        "description": "Create and activate a virtual environment."
+      },
+      {
+        "order": 3,
+        "command": "pip install -r requirements.txt",
+        "description": "Install dependencies (assuming requirements.txt exists, though not explicitly shown)."
+      },
+      {
+        "order": 4,
+        "command": "Download checkpoint from Google Drive link.",
+        "description": "Download the pre-trained model weights."
+      },
+      {
+        "order": 5,
+        "command": "python test.py --near_dir ./testdata/MFI-WHU/source_1 --far_dir ./testdata/MFI-WHU/source_2 --ckpt ./sobel_best.pt --out_fuse_dir ./outputs_MFIWHU_test/fuse",
+        "description": "Run the test script with provided example paths."
+      }
+    ],
+    "one_liner_possible": false,
+    "one_liner_command": null,
+    "readme_quality": "good",
+    "potential_blockers": [
+      "The `requirements.txt` file is not present in the provided file tree, which is usually needed for `pip install -r requirements.txt`.",
+      "The test command assumes the existence of a `testdata` directory with specific subfolders and a `sobel_best.pt` checkpoint file, which are not provided in the tree. These would need to be manually created or downloaded.",
+      "The README mentions PyTorch but does not explicitly list it as a dependency or provide installation instructions for it."
+    ],
+    "summary": "This repository is relatively easy to set up. The README provides clear instructions for downloading checkpoints and running a test script, including example command-line arguments. However, a `requirements.txt` file is missing, and the test data needs to be manually prepared or downloaded."
+  },
+  {
+    "repo_name": "SFDKAN",
+    "model_used": "gemini-2.5-flash-lite",
+    "overall_ease_score": 3,
+    "ease_label": "hard",
+    "has_lockfile": false,
+    "has_checkpoint": true,
+    "key_dependencies": [
+      {
+        "name": "PyTorch",
+        "version_pinned": false
+      },
+      {
+        "name": "torchvision",
+        "version_pinned": false
+      },
+      {
+        "name": "numpy",
+        "version_pinned": false
+      },
+      {
+        "name": "scipy",
+        "version_pinned": false
+      },
+      {
+        "name": "tqdm",
+        "version_pinned": false
+      },
+      {
+        "name": "opencv-python",
+        "version_pinned": false
+      }
+    ],
+    "linked_url": [],
+    "dataset_used": [],
+    "setup_steps": [
+      {
+        "order": 1,
+        "command": "git clone https://github.com/xxx/SFDKAN.git",
+        "description": "Clone the repository."
+      },
+      {
+        "order": 2,
+        "command": "pip install -r requirements.txt",
+        "description": "Install dependencies. Note: requirements.txt is missing."
+      },
+      {
+        "order": 3,
+        "command": "python train_med.py",
+        "description": "Run the training script. Note: No clear instructions on dataset preparation or configuration."
+      },
+      {
+        "order": 4,
+        "command": "python test_med.py",
+        "description": "Run the testing script. Note: No clear instructions on dataset preparation or configuration."
+      }
+    ],
+    "one_liner_possible": false,
+    "one_liner_command": null,
+    "readme_quality": "minimal",
+    "potential_blockers": [
+      "The README is very minimal and lacks crucial setup instructions, such as how to prepare datasets or configure the training/testing process.",
+      "There is no `requirements.txt` file present, making it difficult to know the exact dependencies and their versions.",
+      "The repository structure is complex with duplicated `models` folders, which might indicate an organizational issue or a mistake.",
+      "The README does not specify how to obtain or use the trained models mentioned.",
+      "The scripts `train_med.py` and `test_med.py` are present, but their usage, required inputs, and configuration are not explained."
+    ],
+    "summary": "This repository is difficult to run due to a very minimal README, the absence of a requirements file, and unclear instructions on dataset preparation and script execution. While checkpoints are available, the lack of guidance makes setup a challenging process."
+  },
+  {
+    "repo_name": "SFMFusion",
+    "model_used": "gemini-2.5-flash-lite",
+    "overall_ease_score": 7,
+    "ease_label": "easy",
+    "has_lockfile": false,
+    "has_checkpoint": true,
+    "key_dependencies": [
+      {
+        "name": "Python",
+        "version_pinned": false
+      },
+      {
+        "name": "PyTorch",
+        "version_pinned": true
+      },
+      {
+        "name": "CUDA",
+        "version_pinned": true
+      },
+      {
+        "name": "mamba-ssm",
+        "version_pinned": true
+      }
+    ],
+    "linked_url": [
+      {
+        "url": "https://arxiv.org/pdf/2511.06593v1",
+        "description": "TIP 2025 Paper"
+      },
+      {
+        "url": "https://arxiv.org/pdf/2511.06593v1",
+        "description": "Paper"
+      },
+      {
+        "url": "https://github.com/Linfeng-Tang/MSRS",
+        "description": "MSRS dataset download"
+      },
+      {
+        "url": "https://github.com/JinyuanLiu-CV/TarDAL",
+        "description": "M3FD dataset download"
+      },
+      {
+        "url": "https://github.com/JinyuanLiu-CV/SegMiF",
+        "description": "FMB dataset download"
+      },
+      {
+        "url": "https://www.med.harvard.edu/AANLIB/home.html",
+        "description": "Harvard dataset download"
+      }
+    ],
+    "dataset_used": [
+      "MSRS",
+      "M3FD",
+      "FMB",
+      "Harvard"
+    ],
+    "setup_steps": [
+      {
+        "order": 1,
+        "command": "git clone <repository_url>",
+        "description": "Clone the repository."
+      },
+      {
+        "order": 2,
+        "command": "pip install -r requirements.txt",
+        "description": "Install Python dependencies. Note: requirements.txt is not present in the tree, assuming it should be created or inferred from the README."
+      },
+      {
+        "order": 3,
+        "command": "Download datasets and organize them under data/MSRS/ as specified.",
+        "description": "Download and place the required datasets (MSRS, M3FD, FMB, Harvard) into the specified directory structure."
+      },
+      {
+        "order": 4,
+        "command": "python train.py",
+        "description": "Train the model (optional, if not using pretrained weights)."
+      },
+      {
+        "order": 5,
+        "command": "python test.py",
+        "description": "Run inference with pretrained weights."
+      },
+      {
+        "order": 6,
+        "command": "python test_metric.py",
+        "description": "Evaluate the model's performance using specified metrics."
+      }
+    ],
+    "one_liner_possible": false,
+    "one_liner_command": null,
+    "readme_quality": "excellent",
+    "potential_blockers": [
+      "The `requirements.txt` file is not present in the repository, which is usually expected for easy dependency installation. Developers will need to manually install dependencies based on the README or infer them.",
+      "The dataset download links provided in the README are external and require manual download and organization, which can be time-consuming."
+    ],
+    "summary": "This repository provides code for SFMFusion, a multi-modal image fusion framework. Setting it up involves cloning the repo, manually installing dependencies (as requirements.txt is missing), downloading and organizing several datasets from external links, and then running training or testing scripts. While the README is excellent and provides clear instructions, the manual steps for dependency and dataset management make it moderately easy to get running."
+  },
+  {
+    "repo_name": "SSEFusion",
+    "model_used": "gemini-3.1-flash-lite",
+    "overall_ease_score": 1,
+    "ease_label": "very hard",
+    "has_lockfile": false,
+    "has_checkpoint": false,
+    "key_dependencies": [],
+    "linked_url": [],
+    "dataset_used": [],
+    "setup_steps": [],
+    "one_liner_possible": false,
+    "one_liner_command": null,
+    "readme_quality": "minimal",
+    "potential_blockers": [
+      "The repository contains only a README.md file.",
+      "There is no source code, installation instructions, or dependency requirements provided.",
+      "No information on how to run the model or access the dataset is available."
+    ],
+    "summary": "The repository is currently empty of any functional code or documentation beyond a title. It is impossible to run or evaluate the project in its current state."
+  },
+  {
+    "repo_name": "SSPFUSION",
+    "model_used": "gemini-3.1-flash-lite",
+    "overall_ease_score": 1,
+    "ease_label": "very hard",
+    "has_lockfile": false,
+    "has_checkpoint": false,
+    "key_dependencies": [],
+    "linked_url": null,
+    "dataset_used": null,
+    "setup_steps": [],
+    "one_liner_possible": false,
+    "one_liner_command": null,
+    "readme_quality": "minimal",
+    "potential_blockers": [
+      "The repository contains no source code.",
+      "The README explicitly states that the code will be released shortly.",
+      "No installation instructions, requirements, or scripts are provided."
+    ],
+    "summary": "This repository is currently empty of any functional code or implementation details. It serves only as a placeholder for a future release, making it impossible to run or evaluate at this time."
+  },
+  {
+    "repo_name": "TSFI-Fusion",
+    "model_used": "gemini-3.1-flash-lite",
+    "overall_ease_score": 4,
+    "ease_label": "moderate",
+    "has_lockfile": false,
+    "has_checkpoint": true,
+    "key_dependencies": [
+      {
+        "name": "torch",
+        "version_pinned": false
+      },
+      {
+        "name": "torchvision",
+        "version_pinned": false
+      }
+    ],
+    "linked_url": [
+      {
+        "url": "https://github.com/Linfeng-Tang/MSRS",
+        "description": "MSRS dataset"
+      },
+      {
+        "url": "https://figshare.com/articles/dataset/TNO_Image_Fusion_Dataset/1008029",
+        "description": "TNO dataset"
+      },
+      {
+        "url": "https://github.com/dlut-dimt/TarDAL",
+        "description": "M3FD dataset"
+      },
+      {
+        "url": "https://www.med.harvard.edu/AANLIB/home.html",
+        "description": "Harvard medical dataset"
+      },
+      {
+        "url": "https://github.com/RollingPlain/IVIF_ZOO/tree/main/Metric",
+        "description": "Evaluation metrics"
+      }
+    ],
+    "dataset_used": [
+      "MSRS",
+      "TNO",
+      "M3FD",
+      "Harvard medical dataset"
+    ],
+    "setup_steps": [
+      {
+        "order": 1,
+        "command": "git clone https://github.com/leesir2001/TSFI-Fusion",
+        "description": "Clone the repository"
+      },
+      {
+        "order": 2,
+        "command": "python dataprocessing.py",
+        "description": "Process the datasets"
+      },
+      {
+        "order": 3,
+        "command": "python test.py",
+        "description": "Run the inference script using the provided checkpoint"
+      }
+    ],
+    "one_liner_possible": true,
+    "one_liner_command": "python test.py",
+    "readme_quality": "good",
+    "potential_blockers": [
+      "Missing requirements.txt or environment.yml file",
+      "Manual dataset acquisition and preprocessing required",
+      "No explicit instructions on how to install dependencies"
+    ],
+    "summary": "The repository is relatively easy to test because it includes a pre-trained checkpoint and a simple test script. However, it lacks a dependency file, requiring the user to manually install necessary packages, and requires external dataset downloads and manual preprocessing before training."
+  },
+  {
+    "repo_name": "UUD-Fusion",
+    "model_used": "gemini-3.1-flash-lite",
+    "overall_ease_score": 3,
+    "ease_label": "hard",
+    "has_lockfile": false,
+    "has_checkpoint": true,
+    "key_dependencies": [
+      {
+        "name": "PyTorch",
+        "version_pinned": false
+      }
+    ],
+    "linked_url": [
+      {
+        "url": "https://pan.baidu.com/s/1up-FGeMLt0_LQACDWjDYoQ?pwd=6356",
+        "description": "Training Datasets"
+      },
+      {
+        "url": "https://pan.baidu.com/s/1cP7DKddQHjxO6W6ABZc7cg?pwd=hwso",
+        "description": "Test Datasets"
+      },
+      {
+        "url": "https://drive.google.com/file/d/1-5-rZEbpCgVHfy-ki0m-bXdqT7_Sz6Qq/view?usp=drivesdk",
+        "description": "Test Datasets (Google Drive)"
+      },
+      {
+        "url": "https://pan.baidu.com/s/1qWiIM3jsU4vag6cdMVmORg?pwd=n0eb",
+        "description": "Pretrained models and checkpoints"
+      },
+      {
+        "url": "https://www.sciencedirect.com/science/article/pii/S1077314224002996",
+        "description": "Article Link"
+      }
+    ],
+    "dataset_used": [
+      "GFP",
+      "Harvard",
+      "Histological",
+      "lytro",
+      "MFF-WHU",
+      "MFFW",
+      "MSRS",
+      "Roadscene",
+      "SICE1",
+      "SICE2",
+      "SICE3",
+      "TNO"
+    ],
+    "setup_steps": [
+      {
+        "order": 1,
+        "command": "git clone <repo-url>",
+        "description": "Clone the repository."
+      },
+      {
+        "order": 2,
+        "command": "Download datasets and pre-trained models from provided links",
+        "description": "Manually download external data and model weights."
+      },
+      {
+        "order": 3,
+        "command": "Edit python files",
+        "description": "Manually modify dataset paths and save directories in train/test scripts."
+      },
+      {
+        "order": 4,
+        "command": "python pretrain19-3.py",
+        "description": "Run the pre-training script."
+      },
+      {
+        "order": 5,
+        "command": "python train39.py (or other variants)",
+        "description": "Run the training script for the specific fusion task."
+      },
+      {
+        "order": 6,
+        "command": "python test39.py (or other variants)",
+        "description": "Run the testing script for the specific fusion task."
+      }
+    ],
+    "one_liner_possible": false,
+    "one_liner_command": null,
+    "readme_quality": "good",
+    "potential_blockers": [
+      "No requirements.txt or environment.yml file provided",
+      "Manual path configuration required in multiple source files",
+      "Datasets and checkpoints are hosted on external cloud storage (Baidu Pan)",
+      "Lack of clear instructions on dependencies or Python version"
+    ],
+    "summary": "The repository is difficult to set up because it lacks dependency management files like requirements.txt and requires manual editing of source code to configure file paths. Users must also manually download large datasets and model checkpoints from external links before the code can be executed."
+  }
+]

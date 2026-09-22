@@ -2,8 +2,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 
-mri_data = pd.read_csv("data/ADNI/All_Subjects_Key_MRI_27Mar2026.csv")
-pet_data = pd.read_csv("data/ADNI/All_Subjects_Key_PET_27Mar2026.csv")
+mri_data = pd.read_csv("data/raw/ADNI-Clinical/All_Subjects_Key_MRI_27Mar2026.csv")
+pet_data = pd.read_csv("data/raw/ADNI-Clinical/All_Subjects_Key_PET_27Mar2026.csv")
 # print(f"MRI columns: {mri_data.columns.tolist()}")
 # print(f"MRI example: {mri_data.head()}")
 # print(f"PET columns: {pet_data.columns.tolist()}")

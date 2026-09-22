@@ -1,0 +1,46 @@
+{
+  "title": "Evidential uncertainty-aware and dual-view prediction fusion for semi-supervised medical image segmentation",
+  "year": 2026,
+  "paper_link": "https://doi.org/10.1016/j.knosys.2026.116050",
+  "github_link": "",
+  "fusion_modalities": [],
+  "method_diagram_fig": [
+    2
+  ],
+  "proposed_method_detail": {
+    "method_name": "EU-DPF",
+    "model_family": [
+      {
+        "name": "U-Net",
+        "role": "Primary segmentation backbone and feature extractor"
+      }
+    ],
+    "architecture_backbone": [
+      "V-Net",
+      "U-Net"
+    ],
+    "image_transform_model": [],
+    "contributions": [
+      {
+        "improvement": "Improved pseudo-label quality and robustness",
+        "implementation_detail": "Efficiently fusing predictions from two different views (Linear Classifier and Evidential Prototype Classifier).",
+        "improve_from": "Existing methods relying on a single prediction branch for pseudo-label generation"
+      },
+      {
+        "improvement": "More accurate and robust pseudo-labels",
+        "implementation_detail": "Constructing an evidential prototype classifier (EPC) that fuses labeled and unlabeled prototypes, and innovatively transforms the similarity between pixel features and corresponding prototypes directly into evidential support.",
+        "improve_from": "Existing prototype-based methods relying solely on labeled data"
+      },
+      {
+        "improvement": "More reliable and holistic guidance for pseudo-label generation",
+        "implementation_detail": "Integrating evidential deep learning to jointly assess both epistemic and aleatoric uncertainty, and proposing an improved evidential fusion rule that effectively combines dual-view predictions.",
+        "improve_from": "Prevailing uncertainty estimation methods based on Shannon entropy alone"
+      }
+    ],
+    "limitations": [
+      "The transformation requires that the outputs of the Linear Classifier (LC) and the Evidential Prototype Classifier (EPC) be on a comparable scale before evidence conversion.",
+      "The underlying scale misalignment between the two prediction sources (unbounded logits vs. bounded cosine similarities) is not fully resolved by the hyper-parameter T_p.",
+      "Future work needs to explore more comprehensive calibration methods (e.g., distributional alignment via quantile matching or normalization to a shared statistical scale) to better harmonize predictions from heterogeneous classifiers."
+    ]
+  }
+}

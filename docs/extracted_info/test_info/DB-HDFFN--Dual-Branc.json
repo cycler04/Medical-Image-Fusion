@@ -1,0 +1,56 @@
+{
+  "title": "DB-HDFFN: Dual Branch Hierarchical Dynamic Feature Fusion Network for medical image classification",
+  "year": 2026,
+  "paper_link": "https://doi.org/10.1016/j.bspc.2026.109538",
+  "github_link": "",
+  "fusion_modalities": [],
+  "method_diagram_fig": [
+    2
+  ],
+  "proposed_method_detail": {
+    "method_name": "DB-HDFFN (Dual Branch Hierarchical Dynamic Feature Fusion Network)",
+    "model_family": [
+      {
+        "name": "Transformer",
+        "role": "Global Feature Learner (Dynamic Sparse Attention Block)"
+      },
+      {
+        "name": "CNN",
+        "role": "Local Feature Learner (Intra-Inter Variance Feature Extracting Block)"
+      },
+      {
+        "name": "CNN",
+        "role": "Feature Fusion (Dynamic Fusion Block)"
+      }
+    ],
+    "architecture_backbone": [],
+    "image_transform_model": [],
+    "contributions": [
+      {
+        "improvement": "Noise-robust and computation-efficient global modeling by addressing irrelevant information.",
+        "implementation_detail": "Developed a Dynamic Sparse Attention Block (DSA-Block) with a novel top-k dynamic sparsification strategy that selectively preserves the most informative regions.",
+        "improve_from": "Existing Transformer-based methods that apply full attention and are easily distracted by irrelevant regions."
+      },
+      {
+        "improvement": "Accurately capturing fine-grained pathological patterns in complex lesion areas by adaptively emphasizing subtle lesion regions and suppressing misleading anatomical variations.",
+        "implementation_detail": "Designed an Intra-Inter Variance Feature Extracting Block (ICV-Block) that leverages the inherent property of significant intra-image variance and relatively slight inter-image variance in medical images.",
+        "improve_from": "Existing vision models that largely overlooked the unique variance property of medical images."
+      },
+      {
+        "improvement": "Effective integration of multi-scale global and local representations.",
+        "implementation_detail": "Proposed a Dynamic Fusion Block (DF-Block) that performs hierarchical cross-branch fusion via channel attention and dynamic convolution, effectively preserving complementary characteristics.",
+        "improve_from": "Direct feature fusion methods."
+      },
+      {
+        "improvement": "Overall superior performance in medical image classification across multiple datasets.",
+        "implementation_detail": "The proposed Dual-Branch Hierarchical Dynamic Feature Fusion Network (DB-HDFFN) combines the DSA-Block, ICV-Block, and DF-Block.",
+        "improve_from": "Other state-of-the-art models (CNN-based, Transformer-based, and fusion-based methods)."
+      }
+    ],
+    "limitations": [
+      "Currently designed for 2D images; extending to 3D modalities may require redesigning attention and variance-aware modules for volumetric consistency.",
+      "Dynamic components introduce overhead, suggesting the need for lighter, more efficient variants.",
+      "Relies on fully supervised learning and may be less effective on datasets with limited annotations."
+    ]
+  }
+}

@@ -1,0 +1,159 @@
+{
+  "title": "Imaging coupled filtering: A unified multi-channel framework for multimodal medical image registration and fusion",
+  "year": 2026,
+  "paper_link": "https://doi.org/10.1016/j.sigpro.2025.110451",
+  "github_link": "https://github.com/DEICV/ICF",
+  "fusion_modalities": [
+    "CT-MR",
+    "MR-T1-MR-T2",
+    "MR-PET",
+    "CT-PET"
+  ],
+  "method_diagram_fig": [
+    1
+  ],
+  "proposed_method_detail": {
+    "method_name": "Imaging Coupled Filtering (ICF)",
+    "model_family": "Traditional non-DL",
+    "architecture_backbone": [
+      "Multi-Scale Transforms (MST)",
+      "Edge-Preserving Filtering (EPF)",
+      "Non-Subsampled Contourlet Transform (NSCT)",
+      "Pulse-Coupled Neural Networks (PCNN)",
+      "Graph-based Visual Saliency (GBVS)"
+    ],
+    "image_transform_model": [
+      {
+        "canonical_name": "Gaussian Filter",
+        "raw_name": "Gaussian filter"
+      },
+      {
+        "canonical_name": "Guide Filter",
+        "raw_name": "guided filtering"
+      },
+      {
+        "canonical_name": "NSCT",
+        "raw_name": "non-subsampled contourlet transform"
+      },
+      {
+        "canonical_name": "PCNN",
+        "raw_name": "Pulse-Coupled Neural Networks"
+      },
+      {
+        "canonical_name": "Sobel operator",
+        "raw_name": "Sobel operator"
+      }
+    ],
+    "aimed_contribution": [
+      {
+        "improvement": "Effectively addresses insufficient image decomposition, preserving and enhancing multi-feature expression of source images",
+        "implementation_detail": "Refines source images into four coupling channels (smoothing, texture, contour, and edge) and incorporates association and coupling of each feature channel.",
+        "improve_from": "Existing frequency domain methods with deficiencies in feature loss and insufficient color restoration"
+      },
+      {
+        "improvement": "Better maintenance of overall image structure and significant enrichment of multi-feature expression and structural similarity between fused and source images",
+        "implementation_detail": "Proposes a visual saliency decomposition strategy and a visual saliency based NSCT fusion rule.",
+        "improve_from": "Existing methods"
+      },
+      {
+        "improvement": "Accurate distinction of detail levels in adhesive lesion invasion areas by extracting detail and hierarchical information from image space and intensity aspects",
+        "implementation_detail": "Proposes a texture enhancement operator.",
+        "improve_from": "Existing methods"
+      },
+      {
+        "improvement": "Provides robust data support for subsequent image fusion research",
+        "implementation_detail": "Acquired, desensitized, and registered 403 groups of multimodal abdominal medical images (Ab-MI) and made them publicly available.",
+        "improve_from": "Lack of open-source benchmark datasets at the systemic level"
+      }
+    ]
+  },
+  "experiment_setup": {
+    "datasets": [
+      {
+        "datasets_name": "Ab-MI Dataset",
+        "details": "403 groups of multimodal abdominal medical images (Ab-MI) collected across four imaging modalities and five disease categories. Contains 74 groups of MR-T1/MR-T2 image pairs from three patients, and 329 groups of CT/PET image pairs from two other patients. All images are 256x256 resolution. Registered using FourierNet-based method."
+      },
+      {
+        "datasets_name": "Harvard Medical School website dataset",
+        "details": "Publicly available dataset for brain images, comprising 59 groups of CT/MR image pairs and 86 groups of MR/PET image pairs. All images are 256x256 resolution."
+      }
+    ],
+    "training_details": "All experiments are implemented in Matlab 2018a with AMD Ryzen 7 5800 and Radeon Graphics 3.20GHz, 16G RAM. No specific training details for a deep learning model are provided as ICF is a traditional method.",
+    "evaluation_metrics": [
+      {
+        "canonical_name": "PSNR",
+        "raw_name": "Peak Signal-to-Noise Ratio"
+      },
+      {
+        "canonical_name": "SSIM",
+        "raw_name": "Structural Similarity"
+      },
+      {
+        "canonical_name": "MI",
+        "raw_name": "Mutual Information"
+      },
+      {
+        "canonical_name": "SF",
+        "raw_name": "Spatial Frequency"
+      },
+      {
+        "canonical_name": "SD",
+        "raw_name": "Standard Deviation"
+      },
+      {
+        "canonical_name": "Qabf",
+        "raw_name": "Edge-Based Fusion Quality Metric"
+      },
+      {
+        "canonical_name": "RMSE",
+        "raw_name": "Root Mean Square Error"
+      }
+    ],
+    "compared_methods": [
+      {
+        "name": "NSCT-DWRE-STO",
+        "cite_number": 27
+      },
+      {
+        "name": "NSST-IMSMG-VSM",
+        "cite_number": 36
+      },
+      {
+        "name": "MLCF",
+        "cite_number": 15
+      },
+      {
+        "name": "SPCNN",
+        "cite_number": 37
+      },
+      {
+        "name": "IFCNN",
+        "cite_number": 38
+      },
+      {
+        "name": "DDIFN",
+        "cite_number": 4
+      },
+      {
+        "name": "NSCT-DC",
+        "cite_number": 14
+      },
+      {
+        "name": "NSCT-PC",
+        "cite_number": 23
+      },
+      {
+        "name": "NSCT-EN",
+        "cite_number": 19
+      },
+      {
+        "name": "NSCT-SML-SR",
+        "cite_number": 18
+      },
+      {
+        "name": "NSCT-SR-PCNN",
+        "cite_number": 35
+      }
+    ]
+  }
+}

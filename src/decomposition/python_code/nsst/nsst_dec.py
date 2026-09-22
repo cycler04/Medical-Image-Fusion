@@ -1,8 +1,8 @@
 import numpy as np
 from scipy.signal import convolve2d
-from shearing_filters_myer import shearing_filters_myer
-from processing_ultis import conv2_same_matlab, symext, upsample2df, atrousc
-from atrousfilters import atrousfilters
+from decomposition.python_code.nsst.shearing_filters_myer import shearing_filters_myer
+from decomposition.python_code.nsst.processing_ultis import conv2_same_matlab, symext, upsample2df, atrousc
+from decomposition.python_code.nsst.atrousfilters import atrousfilters
 import time
 
 def atrousdec(x, fname, Nlevels):

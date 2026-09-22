@@ -13,7 +13,7 @@ import sys
 import numpy as np
 import scipy as scipy
 import scipy.io as sio
-from pyshearlab.pySLFilters import *
+from decomposition.python_code.pyshearlab.pySLFilters import *
 
 
 def SLcheckFilterSizes(rows,cols, shearLevels,directionalFilter,scalingFilter,

@@ -1,4 +1,4 @@
-"""
+﻿"""
 CIELAB Color Space Module
 =========================
 Converts an image to CIELAB color space (D65 illuminant, sRGB input) and
@@ -524,7 +524,7 @@ def visualize_lab(img_rgb: np.ndarray,
 # ─────────────────────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
-    image_path = "data/AANLIB/SPECT-MRI/SPECT/3015.png"
+    image_path = "data/raw/Harvard-AANLIB/SPECT-MRI/SPECT/3015.png"
     img        = load_image(image_path)
 
     print(f"Image shape : {img.shape}")

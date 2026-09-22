@@ -1,0 +1,58 @@
+[
+  {
+    "stem": "2508.16881v1",
+    "verification": {
+      "proposed_method_detail.model_family": {
+        "original": "Attention",
+        "is_correct": false,
+        "confidence": "high",
+        "corrected": [
+          "VLM",
+          "Mamba"
+        ],
+        "explanation": "The paper explicitly states that the proposed AWM-Fuse method is based on 'global and local text perception' using Vision-Language Models (VLMs) like BLIP, ChatGPT, and CLIP (Page 1, Abstract & Section III.A). Mamba is also explicitly mentioned as a component within the architecture (Page 2, Section III.A). 'Attention' is a mechanism, not a model family in the provided strict enum list."
+      },
+      "proposed_method_detail.architecture_backbone": {
+        "original": [
+          "Mamba",
+          "Residual State Space Block (RSSB)",
+          "U-Net"
+        ],
+        "is_correct": false,
+        "confidence": "high",
+        "corrected": [
+          "U-Net",
+          "Mamba"
+        ],
+        "explanation": "The paper states that 'our RSSBs employ a U-Net structure' (Page 5, Training Setups), making U-Net the primary architectural backbone. The Residual State Space Block (RSSB) is an intermediate feature extraction module based on Mamba (Page 2, Section III.A). According to the strict enum constraint, 'Residual State Space Block (RSSB)' is not an allowed value, but 'U-Net' and 'Mamba' are."
+      }
+    }
+  },
+  {
+    "stem": "2511.06593v1",
+    "verification": {
+      "proposed_method_detail.model_family": {
+        "original": "Mamba",
+        "is_correct": false,
+        "confidence": "high",
+        "corrected": [
+          "Mamba",
+          "CNN"
+        ],
+        "explanation": "The paper proposes 'Spatial-Frequency Enhanced Mamba Fusion' (SFMFusion), which is primarily Mamba-based. However, the architecture extensively integrates Convolutional Neural Networks (CNNs) within its key components (e.g., Mixed-scale Mamba Block, Channel Enhanced Block, Frequency Enhanced Block) and for initial/final feature processing, making CNN a significant supporting family. The original value was a string, not an array, which is incorrect per constraints."
+      },
+      "proposed_method_detail.architecture_backbone": {
+        "original": [
+          "Mamba"
+        ],
+        "is_correct": false,
+        "confidence": "high",
+        "corrected": [
+          "Mamba",
+          "CNN"
+        ],
+        "explanation": "The core architecture is built upon Mamba blocks (SFMG, SFMB, MMB, DFMB), making Mamba the primary backbone. However, these Mamba-based blocks and the overall framework extensively utilize convolutional layers for various enhancements and processing steps, indicating that CNNs are an integral supporting part of the architecture backbone. The original value was incomplete as it missed the CNN component."
+      }
+    }
+  }
+]

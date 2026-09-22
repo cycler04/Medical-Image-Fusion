@@ -1,0 +1,131 @@
+{
+  "title": "Global-aware multi-scale fusion network for unsupervised non-rigid medical image registration",
+  "year": 2026,
+  "paper_link": "https://doi.org/10.1016/j.optlastec.2025.114437",
+  "github_link": "",
+  "fusion_modalities": [
+    "MR-MR",
+    "MR-CT"
+  ],
+  "method_diagram_fig": [
+    1,
+    2
+  ],
+  "proposed_method_detail": {
+    "method_name": "GMF",
+    "model_family": "UNet",
+    "architecture_backbone": [
+      "Dual-stream encoder",
+      "Temporal Multi-scale Attention Fusion (TMAF)",
+      "Multi-scale convolutions",
+      "Global Dependency Learning Attention Mechanism (GDLAM)",
+      "Pyramid decoder"
+    ],
+    "image_transform_model": [],
+    "contributions": [
+      {
+        "improvement": "Enhanced feature extraction and fusion, producing smooth and stable deformation fields for unsupervised non-rigid medical image registration",
+        "implementation_detail": "Leveraging self-reconstruction within an encoder-decoder architecture",
+        "improve_from": "existing methods"
+      },
+      {
+        "improvement": "Improved effectiveness and robustness of feature fusion",
+        "implementation_detail": "Introduction of a Temporal Multi-scale Attention Fusion (TMAF) module in the encoding stage, integrating multi-scale feature extraction with channel and spatial attention, capturing contextual information at different scales through multi-scale convolutions and dynamically adjusting feature importance",
+        "improve_from": "existing methods lacking a unified mechanism to dynamically integrate global and local information across multiple encoding stages"
+      },
+      {
+        "improvement": "Strengthened representational capacity of feature maps and enriched semantic information, thereby improving the quality of the predicted deformation fields",
+        "implementation_detail": "Design of a Global Dependency Learning Attention Mechanism (GDLAM) module in the decoding stage, incorporating spatial attention, channel attention, and channel shuffling to better capture global dependencies",
+        "improve_from": "previous methods' limitations in capturing global dependencies"
+      }
+    ],
+    "limitations": [
+      "Applicability may be restricted to the datasets examined in this study."
+    ]
+  },
+  "experiment_setup": {
+    "datasets": [
+      {
+        "datasets_name": "LPBA",
+        "details": "High-quality brain MRI scans with manually segmented anatomical labels. Contains 40 MRI volumes, pre-aligned and skull-stripped. 30 volumes (30x29 pairs) for training, 10 volumes (10x9 pairs) for testing. Resampled to 160x192x160 (1mmx1mmx1mm)."
+      },
+      {
+        "datasets_name": "Mindboggle101",
+        "details": "Multi-subject, multi-modal, high-precision brain structural data with detailed cortical labels. Contains 20 volumes (20x19 pairs) from OASIS-TRT-20 for testing and 42 volumes (42x41 pairs) from NKI-RS-22 and NKI-TRT-20 for training. Pre-aligned, skull-stripped. Resampled to 160x192x160 (1mmx1mmx1mm)."
+      },
+      {
+        "datasets_name": "ABCT",
+        "details": "Abdominal MRI scans capturing a wide range of cognitive states and pathological variations. Contains 36 volumes (36x35 pairs) for training, 13 volumes (13x12 pairs) for testing. Pre-aligned using canonical affine transformation. Cropped to 160x160x192 (2mmx2mmx2mm)."
+      }
+    ],
+    "training_details": "Trained on an NVIDIA Tesla V100 GPU with 32 GB of RAM, implemented using PyTorch. Batch size set to 1. Training runs for 30 epochs. Initial learning rate (lrinit) is 0.0001, decaying dynamically as training progresses (Eq. 14). Regularization parameter λ is set to 1. Adam optimizer used.",
+    "evaluation_metrics": [
+      {
+        "canonical_name": "DSC",
+        "raw_name": "Dice Score"
+      },
+      {
+        "canonical_name": "HD95",
+        "raw_name": "Hausdorff distance (HD95)"
+      },
+      {
+        "canonical_name": "% Jp < 0",
+        "raw_name": "Jacobi matrix (non-positive Jacobi determinant)"
+      },
+      {
+        "canonical_name": "ASSD",
+        "raw_name": "Average Symmetric Surface Distance (ASSD)"
+      }
+    ],
+    "compared_methods": [
+      {
+        "name": "SyN",
+        "cite_number": 22
+      },
+      {
+        "name": "VoxelMorph (VM)",
+        "cite_number": 14
+      },
+      {
+        "name": "TransMorph (TM)",
+        "cite_number": 44
+      },
+      {
+        "name": "TransMatch",
+        "cite_number": 33
+      },
+      {
+        "name": "PR++",
+        "cite_number": 15
+      },
+      {
+        "name": "DMR",
+        "cite_number": 44
+      },
+      {
+        "name": "PCnet",
+        "cite_number": 37
+      },
+      {
+        "name": "PIVIT",
+        "cite_number": 45
+      },
+      {
+        "name": "ModeTv2",
+        "cite_number": 38
+      },
+      {
+        "name": "UTSRMorph",
+        "cite_number": 34
+      },
+      {
+        "name": "GroupMorph",
+        "cite_number": 25
+      },
+      {
+        "name": "OTMorph",
+        "cite_number": 26
+      }
+    ]
+  }
+}

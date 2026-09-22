@@ -1,0 +1,157 @@
+{
+  "title": "CAWM-Mamba: A unified model for infrared-visible image fusion and compound adverse weather restoration",
+  "year": 2026,
+  "paper_link": "https://doi.org/10.1016/j.eswa.2026.131665",
+  "github_link": "https://github.com/Feecuin/CAWM-Mamba",
+  "fusion_modalities": [
+    "Visible-Infrared"
+  ],
+  "method_diagram_fig": [
+    1
+  ],
+  "proposed_method_detail": {
+    "method_name": "Compound Adverse Weather Mamba (CAWM-Mamba)",
+    "model_family": "Mamba",
+    "architecture_backbone": [
+      "U-Net",
+      "State Space Model (SSM)",
+      "Wavelet Transform"
+    ],
+    "image_transform_model": [
+      {
+        "canonical_name": "DWT",
+        "raw_name": "Discrete Wavelet Transform"
+      },
+      {
+        "canonical_name": "ISWT",
+        "raw_name": "Inverse Wavelet Transform"
+      }
+    ],
+    "contributions": [
+      {
+        "improvement": "Robust fusion in complex environments by handling multiple degradations simultaneously",
+        "implementation_detail": "Proposing CAWM-Mamba, an innovative end-to-end framework for image fusion and restoration under compound weather conditions",
+        "improve_from": "Previous approaches limited to single-weather restoration"
+      },
+      {
+        "improvement": "Enhanced fusion process, improved visible light feature quality, and effective alignment of features from infrared and visible images",
+        "implementation_detail": "Introducing Weather-Aware Preprocess Module (WAPM) and Cross-Modal Feature Interaction Module (CFIM) for embedding global weather information, improving visible light feature quality, and multi-scale pooling and feature interaction",
+        "improve_from": "Existing methods lacking weather-aware preprocessing and explicit cross-modal interaction"
+      },
+      {
+        "improvement": "Improved model's ability to handle complex degradation and enhanced generalization across various weather conditions",
+        "implementation_detail": "Developing Wavelet Space State Block (WSSB) for decoupling multi-frequency degradation patterns using wavelet-domain decomposition, including Freq-SSM for anisotropic high-frequency details and Common Degradation Space Mechanism (CDSM) for unified degradation representation",
+        "improve_from": "Existing methods that struggle with complex degradation patterns and generalization"
+      }
+    ]
+  },
+  "experiment_setup": {
+    "datasets": [
+      {
+        "datasets_name": "AWMM-100K",
+        "details": "Contains 100,000 real and synthetic image pairs. For single-degradation, 700 images for each weather type (rain, haze, snow) for training, 50 separate images for testing. For compound-degradation, 1000 images for each type (rain&haze, rain&snow, haze&snow) for training, 50 separate images for testing. Test scenes are completely distinct from training scenes."
+      },
+      {
+        "datasets_name": "LLVIP",
+        "details": "Standard dataset for clean multi-modal image pairs."
+      },
+      {
+        "datasets_name": "MSRS",
+        "details": "Standard dataset for clean multi-modal image pairs."
+      },
+      {
+        "datasets_name": "M3FD",
+        "details": "Standard dataset for clean multi-modal image pairs."
+      }
+    ],
+    "training_details": "Trained using two Nvidia GeForce RTX 3090 GPUs. Image cropping size gradually expands from 64 to 144. Adam optimizer with default parameters and an initial learning rate of 0.0001. WSSBs adopt a U-Net architecture with block configuration [8,10,10,12,10,10,8]. Feature channels in WSSBs gradually increase from 48 to 384 and then decrease to 48.",
+    "evaluation_metrics": [
+      {
+        "canonical_name": "QMI",
+        "raw_name": "Normalized Mutual Metric QMI"
+      },
+      {
+        "canonical_name": "QNICE",
+        "raw_name": "Non-linear Correlation Metric QNICE"
+      },
+      {
+        "canonical_name": "QG",
+        "raw_name": "Gradient-Based Metric QG"
+      },
+      {
+        "canonical_name": "QM",
+        "raw_name": "Multiscale Scheme Metric QM"
+      },
+      {
+        "canonical_name": "Qp",
+        "raw_name": "Phase Congruency Metric Qp"
+      },
+      {
+        "canonical_name": "Qs",
+        "raw_name": "Piella's Metric Qs"
+      },
+      {
+        "canonical_name": "Qcv",
+        "raw_name": "Chen-Varsheny Metric Qcv"
+      },
+      {
+        "canonical_name": "SSIM",
+        "raw_name": "Structural Similarity-Based Metric SSIM"
+      },
+      {
+        "canonical_name": "Qabf",
+        "raw_name": "Quality Assessment-Based Metric Qabf"
+      }
+    ],
+    "compared_methods": [
+      {
+        "name": "FusionBooster",
+        "cite_number": 10
+      },
+      {
+        "name": "GIF-Net",
+        "cite_number": 9
+      },
+      {
+        "name": "MaeFuse",
+        "cite_number": 24
+      },
+      {
+        "name": "SAGE",
+        "cite_number": 46
+      },
+      {
+        "name": "SHIP",
+        "cite_number": 47
+      },
+      {
+        "name": "TIM",
+        "cite_number": 30
+      },
+      {
+        "name": "TarDal",
+        "cite_number": 29
+      },
+      {
+        "name": "LRRNet",
+        "cite_number": 23
+      },
+      {
+        "name": "FreeFusion",
+        "cite_number": 48
+      },
+      {
+        "name": "AWFusion",
+        "cite_number": 27
+      },
+      {
+        "name": "AwaCLe",
+        "cite_number": 35
+      },
+      {
+        "name": "AdaIR",
+        "cite_number": 11
+      }
+    ]
+  }
+}

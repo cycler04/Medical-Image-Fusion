@@ -1,4 +1,4 @@
-"""
+﻿"""
 YCbCr Color Space Module
 ========================
 Converts an image to YCbCr color space (BT.601 coefficients) and
@@ -229,7 +229,7 @@ def visualize_ycbcr(img_rgb: np.ndarray,
 # ─────────────────────────────────────────────
 
 if __name__ == "__main__":
-    image_path = "data/AANLIB/SPECT-MRI/SPECT/3015.png"
+    image_path = "data/raw/Harvard-AANLIB/SPECT-MRI/SPECT/3015.png"
     img        = load_image(image_path)
 
     print(f"Image shape : {img.shape}")

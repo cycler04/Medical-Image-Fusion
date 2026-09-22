@@ -1,0 +1,154 @@
+{
+  "title": "AWM-Fuse: Multi-Modality Image Fusion for Adverse Weather via Global and Local Text Perception",
+  "year": 2025,
+  "paper_link": "https://arxiv.org/abs/2508.16881",
+  "github_link": "https://github.com/Feecuin/AWM-Fuse",
+  "fusion_modalities": [
+    "Visible-Infrared"
+  ],
+  "method_diagram_fig": [
+    1
+  ],
+  "proposed_method_detail": {
+    "method_name": "AWM-Fuse",
+    "model_family": "VLM",
+    "architecture_backbone": [
+      "Global Text Perception Module (GTPM)",
+      "Residual State Space Block (RSSB)",
+      "Local Text Perception Module (LTPM)",
+      "Wavelet Convolution Decoder"
+    ],
+    "image_transform_model": [
+      {
+        "canonical_name": "WTConv",
+        "raw_name": "Wavelet Convolution"
+      }
+    ],
+    "contributions": [
+      {
+        "improvement": "Effectively handle multiple degradations simultaneously in adverse weather conditions.",
+        "implementation_detail": "Leverages global and local text perception within a unified, shared-weight architecture.",
+        "improve_from": "Existing multi-modality image fusion methods."
+      },
+      {
+        "improvement": "Enhanced generalizability and high-fidelity fusion.",
+        "implementation_detail": "Proposed novel global and local text perception modules that guide feature extraction from both macro and micro perspectives.",
+        "improve_from": "Existing studies with limited textual embedding design and overemphasis on local details."
+      },
+      {
+        "improvement": "Improved fusion image restoration and better alignment with real semantic labels.",
+        "implementation_detail": "Proposed a novel VLM-driven loss using CLIP to guide fusion image restoration, introducing rich and high-quality textual descriptions for multi-modality images under adverse weather.",
+        "improve_from": "Prior VLM-guided methods (limited to image restoration/enhancement, lacking generalization to IVIF, and clean semantic text descriptions)."
+      },
+      {
+        "improvement": "Achieves state-of-the-art performance in complex weather conditions and downstream tasks.",
+        "implementation_detail": "Extensive experiments under diverse adverse weather conditions.",
+        "improve_from": "Current state-of-the-art methods."
+      }
+    ],
+    "limitations": [
+      "Extracting features using the VLM model inevitably incurs additional computational overhead, leading to higher FLOPs and parameters compared to some methods."
+    ]
+  },
+  "experiment_setup": {
+    "datasets": [
+      {
+        "datasets_name": "AWMM-100k",
+        "details": "Contains both real and synthetic samples for three adverse weather types: rain, haze, and snow. Used for adverse weather evaluation."
+      },
+      {
+        "datasets_name": "M3FD",
+        "details": "Standard dataset used for ideal scene evaluation."
+      },
+      {
+        "datasets_name": "MSRS",
+        "details": "Standard dataset used for ideal scene evaluation."
+      },
+      {
+        "datasets_name": "LLVIP",
+        "details": "Standard dataset used for ideal scene evaluation."
+      }
+    ],
+    "training_details": "700 images for each type of adverse weather (rain, haze, and snow) from the AWMM-100k dataset were combined into a single dataset of 2100 image pairs. Each image was randomly cropped to 160x160 pixels, with a batch size of 2. The Adam optimizer was used with an initial learning rate of 1x10^-3, and the model was trained for over 300 epochs. RSSBs employ a U-Net structure, with the block configuration of each layer set to [8, 10, 10, 12, 10, 10, 8]. Feature channels in the RSSBs progressively increase from 48 to 384 and are then reduced back to 48 channels.",
+    "evaluation_metrics": [
+      {
+        "canonical_name": "QG",
+        "raw_name": "Gradient-Based Metric QG"
+      },
+      {
+        "canonical_name": "QM",
+        "raw_name": "Image Fusion Metric-Based metric QM"
+      },
+      {
+        "canonical_name": "Qs",
+        "raw_name": "Piella's Metric Qs"
+      },
+      {
+        "canonical_name": "Qcv",
+        "raw_name": "Chen-Varshney Metric Qcv"
+      },
+      {
+        "canonical_name": "SCD",
+        "raw_name": "Sum of the Correlation of Differences SCD"
+      },
+      {
+        "canonical_name": "VIF",
+        "raw_name": "Visual Information Fidelity VIF"
+      },
+      {
+        "canonical_name": "SSIM",
+        "raw_name": "Structural Similarity Index Measure SSIM"
+      },
+      {
+        "canonical_name": "mIoU",
+        "raw_name": "mean Intersection over Union (mIoU)"
+      },
+      {
+        "canonical_name": "mAP@0.5",
+        "raw_name": "mAP@0.5"
+      },
+      {
+        "canonical_name": "mAP@[0.5:0.95]",
+        "raw_name": "mAP@[0.5:0.95]"
+      }
+    ],
+    "compared_methods": [
+      {
+        "name": "TarDal",
+        "cite_number": 23
+      },
+      {
+        "name": "LRRNet",
+        "cite_number": 24
+      },
+      {
+        "name": "TIM",
+        "cite_number": 34
+      },
+      {
+        "name": "DRMF",
+        "cite_number": 26
+      },
+      {
+        "name": "FILM",
+        "cite_number": 9
+      },
+      {
+        "name": "EMMA",
+        "cite_number": 3
+      },
+      {
+        "name": "SHIP",
+        "cite_number": 25
+      },
+      {
+        "name": "Text-IF",
+        "cite_number": 2
+      },
+      {
+        "name": "AWFusion",
+        "cite_number": 38
+      }
+    ]
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "title": "FusionIFHM: infrared and visible light video fusion method based on intra-frame correlation features and human visual measurement feedback",
+  "year": 2026,
+  "paper_link": "https://doi.org/10.1016/j.measurement.2025.118619",
+  "github_link": "",
+  "fusion_modalities": [
+    "Visible-Infrared"
+  ],
+  "method_diagram_fig": [
+    1,
+    2,
+    7,
+    13
+  ],
+  "proposed_method_detail": {
+    "method_name": "FusionIFHM",
+    "model_family": "Traditional non-DL",
+    "architecture_backbone": [
+      "chunked ridge regression model",
+      "PID control system"
+    ],
+    "image_transform_model": [
+      {
+        "canonical_name": "Guided Filter",
+        "raw_name": "Guided filtering"
+      },
+      {
+        "canonical_name": "RTV",
+        "raw_name": "Relative Total Variation Texture Smoothing"
+      },
+      {
+        "canonical_name": "FARTV",
+        "raw_name": "spatial frequency-aware RTV image smoothing model"
+      },
+      {
+        "canonical_name": "Sobel operator",
+        "raw_name": "Sobel operator"
+      }
+    ],
+    "contributions": [
+      {
+        "improvement": "Extracts intra-frame correlation information effectively",
+        "implementation_detail": "Constructs a chunked ridge regression model with multiple constraints",
+        "improve_from": "Existing fusion methods that ignore intra-frame correlation features"
+      },
+      {
+        "improvement": "Measures fused results and adjusts fusion strategy based on human visual characteristics",
+        "implementation_detail": "Designs an image contrast transformation model and a novel measurement function to eliminate illumination effects, then introduces it into a PID control system",
+        "improve_from": "Existing fusion methods that do not measure fused results and adjust fusion strategy based on HVS"
+      },
+      {
+        "improvement": "Achieves good visual quality and high objective evaluation",
+        "implementation_detail": "Combines intra-frame correlation features and HVS measurement feedback within a PID control system",
+        "improve_from": "Existing methods"
+      }
+    ],
+    "limitations": [
+      "The inference time of FusionIFHM is at an intermediate level, which may be due to the Simulink platform compiling the graphical model into hardware language, making it not satisfactory for real-time video frame fusion.",
+      "Deploying FusionIFHM into real-time video fusion scenarios requires hardware configurations with higher performance.",
+      "Intra-frame correlation feature extraction has an unfavorable effect on the retention of structural information (specifically for QE and Qy metrics)."
+    ]
+  },
+  "experiment_setup": {
+    "datasets": [
+      {
+        "datasets_name": "TNO Image Fusion Dataset",
+        "details": "Five public datasets, all image pairs and video sequences describe complex scenarios about the military."
+      },
+      {
+        "datasets_name": "BEPMS Dataset",
+        "details": "Contains a long video sequence of a soldier walking through a dense jungle."
+      },
+      {
+        "datasets_name": "INO Dataset",
+        "details": "Captures image pairs and video sequences in complex scenes."
+      },
+      {
+        "datasets_name": "MSRS Dataset",
+        "details": "Contains several aligned image pairs under complex lighting conditions."
+      },
+      {
+        "datasets_name": "WHU-OPT-SAR Dataset",
+        "details": "Contains 100 pairs of registered optical images and synthetic aperture radar (SAR) images, size 5556 × 3704. Used for remote sensing image fusion experiments."
+      }
+    ],
+    "training_details": 

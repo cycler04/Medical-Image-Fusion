@@ -11,8 +11,8 @@ Stefan Loock, February 2, 2017 [sloock@gwdg.de]
 
 from __future__ import division
 import numpy as np
-from pyshearlab.pySLFilters import *
-from pyshearlab.pySLUtilities import *
+from decomposition.python_code.pyshearlab.pySLFilters import *
+from decomposition.python_code.pyshearlab.pySLUtilities import *
 
 def SLgetShearletSystem2D(useGPU, rows, cols, nScales, shearLevels=None, full=0, directionalFilter=None, quadratureMirrorFilter=None):
     """

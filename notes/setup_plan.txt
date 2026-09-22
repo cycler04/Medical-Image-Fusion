@@ -1,0 +1,10 @@
+For comparasion and state-of-art model choosing, pick 3 model of eahc family
+Transfromer: SwimFusion (Baseline), APGFusion, ATDFusion, CMMDL, SD-Fuse, TSFI-Fusion, PSLPT(A-general-...)
+Mamba: ISFM, CAWM-Mamba (Not MMIF tested), LMACV, FusionMamba
+VLM (optional): CMI-Fusion
+Auto-Encoder: StrFilter, DeDNet
+U-Net: AWM-Fuse, NSLF, ARFFusion, CM-CSAMFNet
+
+
+Need Training, but seem valuable:
+MRCENet

@@ -1,0 +1,64 @@
+{
+  "title": "CM-CSAMFNet: A cross-modality channel and spatial attention module fusion network for multimodal medical image fusion",
+  "year": 2026,
+  "paper_link": "https://doi.org/10.1016/j.sigpro.2025.110288",
+  "github_link": "https://github.com/ahu-dsp/CM-CSAMFNet",
+  "fusion_modalities": [
+    "SPECT-MRI",
+    "PET-MRI",
+    "GFP-PC"
+  ],
+  "method_diagram_fig": [
+    2
+  ],
+  "proposed_method_detail": {
+    "method_name": "CM-CSAMFNet",
+    "model_family": [
+      {
+        "name": "AutoEncoder",
+        "role": "Overall end-to-end framework"
+      },
+      {
+        "name": "CNN",
+        "role": "Feature extraction and processing using ghost convolutions and attention modules"
+      }
+    ],
+    "architecture_backbone": [
+      "Multiscale AutoEncoder",
+      "Ghost Convolutional Layers",
+      "CBAMFNet",
+      "RCBAM",
+      "MRSCAM",
+      "Dense Jump Connections"
+    ],
+    "image_transform_model": [
+      {
+        "canonical_name": "YCbCr Color Space Conversion",
+        "raw_name": "YCbCr color space conversion"
+      }
+    ],
+    "contributions": [
+      {
+        "improvement": "Superior fusion performance in SPECT-MRI and PET-MRI image fusion tasks",
+        "implementation_detail": "Introduces CBAMFNet, a learnable fusion module leveraging cross-modal channel and spatial attention mechanisms.",
+        "improve_from": "Conventional fusion approaches with manually designed fusion strategies"
+      },
+      {
+        "improvement": "Reduced model parameters",
+        "implementation_detail": "Employs ghost convolution techniques throughout the network (encoder-decoder blocks).",
+        "improve_from": "Multiscale fusion methods suffering from excessive model parameters"
+      },
+      {
+        "improvement": "Comprehensive integration of locally complementary features and global brightness information, accounting for long-range dependencies",
+        "implementation_detail": "Proposes a cross-domain attention mechanism named RCBAM.",
+        "improve_from": "Existing methods with inadequate consideration of long-range dependencies"
+      },
+      {
+        "improvement": "Enhanced feature extraction and full leverage of multimodal information at each scale",
+        "implementation_detail": "Proposes a dual-branch interaction network integrating MRSCAM, residual blocks, and CBAMFNet across multiple scales.",
+        "improve_from": "Conventional parallel or shared encoder networks"
+      }
+    ],
+    "limitations": []
+  }
+}

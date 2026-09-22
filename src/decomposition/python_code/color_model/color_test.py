@@ -1,4 +1,4 @@
-"""
+﻿﻿"""
 Color Space Comparison
 ======================
 Imports HSI, HSV, and YCbCr modules and renders a single
@@ -19,9 +19,9 @@ import matplotlib.gridspec as gridspec
 from matplotlib.colors import Normalize
 
 # ── Import the three color-space modules ──────────────────────────────
-from HSI_test   import rgb_to_hsi,   hsi_to_rgb,   load_image as load_hsi
-from HSV_test   import rgb_to_hsv,   hsv_to_rgb
-from YCrCb_test import rgb_to_ycbcr, ycbcr_to_rgb
+from decomposition.python_code.color_model.HSI_test   import rgb_to_hsi,   hsi_to_rgb,   load_image as load_hsi
+from decomposition.python_code.color_model.HSV_test   import rgb_to_hsv,   hsv_to_rgb
+from decomposition.python_code.color_model.YCrCb_test import rgb_to_ycbcr, ycbcr_to_rgb
 
 
 # ─────────────────────────────────────────────────────────────────────
@@ -189,7 +189,7 @@ def compare_all(img_rgb: np.ndarray, save_path: str | None = None):
 # Entry point
 # ─────────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
-    image_path = "data/AANLIB/SPECT-MRI/SPECT/3015.png"
+    image_path = "data/raw/Harvard-AANLIB/SPECT-MRI/SPECT/3015.png"
 
     # load_image from HSI_test is identical across all three modules
     img = load_hsi(image_path)

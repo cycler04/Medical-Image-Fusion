@@ -1,0 +1,5 @@
+D:\\ForCoding\\CodeProject\\Project\\MMIF\\Method-runs\\dataset\\Harvard
+D:\\ForCoding\\CodeProject\\Project\\MMIF\\Method-runs\\results
+
+/mnt/d/ForCoding/CodeProject/Project/MMIF/Method-runs/dataset/Harvard
+/mnt/d/ForCoding/CodeProject/Project/MMIF/Method-runs/results

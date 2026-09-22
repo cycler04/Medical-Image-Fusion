@@ -1,4 +1,4 @@
-"""
+﻿"""
 LAB Cluster Visualizer — Two Image Folders
 ===========================================
 Samples pixels from two image folders, converts to CIELAB, and plots them
@@ -407,8 +407,8 @@ def visualize_clusters(
 
 
 if __name__ == "__main__":
-    folder_a = "data/AANLIB/SPECT-MRI/SPECT"
-    folder_b = "data/AANLIB/SPECT-MRI/MRI"
+    folder_a = "data/raw/Harvard-AANLIB/SPECT-MRI/SPECT"
+    folder_b = "data/raw/Harvard-AANLIB/SPECT-MRI/MRI"
 
     label_a = "SPECT"
     label_b = "MRI"

@@ -1,0 +1,13 @@
+Tư tưởng khi survey:
+Coi vấn đề chia làm nhiều nhánh cây, mỗi paper đi theo 1 nhánh
+Trong từng nhánh có những vẫn đề nào thường được giải quyết/
+
+Khi tìm hướng xây dụng:
+Khi chọn hướng sẽ chọn mình đi theo nhánh cây nào trước
+Quan trọng lấy được mô hình state-of-art, chạy và so sánh với kết quả paper họ.
+"State-of-art": Đang có metrics toàn diện tốt nhất.
+
+Khi đo việc là chỉnh sửa, nâng cấp các THÀNH PHẦN của mô hình họ, trước đó cần hiểu là:
+- Mỗi thành phần làm gì, nó ảnh hưởng như thế nào tới metrics / loss như thế nào.
+Làm slide thuyết trình riêng cho chính mô hình mình chọn đó .
+

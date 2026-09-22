@@ -2,17 +2,15 @@ from pathlib import Path
 import random
 from PIL import Image
 
-root_folder = "data/AANLIB/PET-MRI"
+root_folder = "data/raw/Harvard-AANLIB/PET-MRI"
 root_path = Path(root_folder)
     
-# Get subfolders
-subfolders = [f for f in root_path.iterdir() if f.is_dir() and 'eval' not in f.name.lower()]
+# Get subfolders (e.g. MRI, PET)
+original_folders = [f for f in root_path.iterdir() if f.is_dir() and 'eval' not in f.name.lower() and f.name.lower() != 'mydatasets']
 
-fused_root_folder = Path("data/Fused_results/PET-MRI")
-
-print(f"Subfolders found: {[f.name for f in subfolders]}")
-fused_folders = [f for f in fused_root_folder.iterdir() if f.is_dir()]
-original_folders = [f for f in subfolders if 'fused' not in f.name]
+# Discover fused model folders for PET-MRI
+fused_root_folder = Path("outputs/fused")
+fused_folders = [f / "PET-MRI" for f in fused_root_folder.iterdir() if (f / "PET-MRI").is_dir()]
 
 print(f"Fused folders: {[f.name for f in fused_folders]}")
 print(f"Original folders: {[f.name for f in original_folders]}")

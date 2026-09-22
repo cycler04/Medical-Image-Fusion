@@ -1,0 +1,153 @@
+{
+  "title": "Adaptive spatial and frequency experts fusion network for medical image fusion",
+  "year": 2024,
+  "paper_link": "https://doi.org/10.1016/j.bspc.2024.106478",
+  "github_link": "",
+  "fusion_modalities": [
+    "CT-MRI",
+    "PET-MRI",
+    "SPECT-MRI"
+  ],
+  "method_diagram_fig": [
+    1,
+    2
+  ],
+  "proposed_method_detail": {
+    "method_name": "ASFE-Fusion",
+    "model_family": "CNN",
+    "architecture_backbone": [
+      "Cross Attention Spatial Fusion (CASF) module",
+      "Adaptive Frequency Fusion (AFF) module",
+      "Spatial and Frequency Experts Fusion (SFEF) module"
+    ],
+    "image_transform_model": [
+      {
+        "canonical_name": "Fast Fourier Transform",
+        "raw_name": "fast Fourier transform F(.)"
+      },
+      {
+        "canonical_name": "Inverse Fast Fourier Transform",
+        "raw_name": "inverse fast Fourier transform F-1(.)"
+      }
+    ],
+    "contributions": [
+      {
+        "improvement": "adaptively fuse local features and improve the details of the fused images",
+        "implementation_detail": "A cross attention spatial fusion (CASF) module is devised to adaptively fuse local features, which can constraint the consistency in spatial correlations by crossing the self-similarity map between two source images.",
+        "improve_from": ""
+      },
+      {
+        "improvement": "fuse global features, reduce computational complexity, and overcome the influences of the limited field of view on the fusion results",
+        "implementation_detail": "An adaptive frequency fusion (AFF) module is introduced to fuse the features from a global perspective in frequency domain through a simple CNN architecture with spatial attention.",
+        "improve_from": "transformer"
+      },
+      {
+        "improvement": "adaptively fuse local and global features, and further improve the quality of fusion images",
+        "implementation_detail": "An ensemble-learning-based spatial and frequency experts fusion (SFEF) module is used, taking the fused features in spatial and frequency domains as two experts.",
+        "improve_from": ""
+      },
+      {
+        "improvement": "significant performance improvements on various medical image fusion tasks and superiority in downstream disease classification task",
+        "implementation_detail": "The proposed ASFE-Fusion method.",
+        "improve_from": "state-of-the-art methods"
+      }
+    ],
+    "limitations": [
+      "Large number of parameters and huge computational complexity (FLOPS) compared to CNN-based models.",
+      "Fusion weights are still dependent on the hyperparameters in the loss function and modules, investigating the method to set these hyperparameters adaptively is still a challenging and interesting work."
+    ]
+  },
+  "experiment_setup": {
+    "datasets": [
+      {
+        "datasets_name": "Harvard medical AANLIB dataset",
+        "details": "184 pairs of CT-MRI images, 269 pairs of PET-MRI images, and 357 pairs of SPECT-MRI images. For each dataset type, 24 image pairs were randomly selected as the test set, with the remaining pairs used as the training set. All images are 256 × 256 pixels. PET and SPECT images are color images with RGB channels, whereas CT and MRI images are single-channel grayscale images. For PET-MRI and SPECT-MRI image fusion tasks, PET and SPECT images were initially converted to the YCbCr color space, using the Y channel for training and combining Cb and Cr channels for final fusion result."
+      }
+    ],
+    "training_details": "Implemented using the PyTorch framework on an NVIDIA RTX A6000 GPU. AdamW [34] optimizer with default parameters (β₁ = 0.9, β2 = 0.99, weight_decay = 0.2). Learning rate is 2×10-4. Number of epochs was set to 2000. Batch size was set to 4. Loss function hyperparameters λ = 0.5 and η = 0.5. CASF module patch size p = 16, embedding dimension = 256. AFF module number of MLPs m = 4, number of slots s = 256. Encoder convolutional layers share parameters across different modalities. For downstream classification task, SGD optimizer was used, training epoch = 100, batch size = 16, initial learning rate = 1×10-3.",
+    "evaluation_metrics": [
+      {
+        "canonical_name": "EN",
+        "raw_name": "Entropy"
+      },
+      {
+        "canonical_name": "PSNR",
+        "raw_name": "Peak Signal-to-Noise Ratio"
+      },
+      {
+        "canonical_name": "MI",
+        "raw_name": "Mutual Information"
+      },
+      {
+        "canonical_name": "CC",
+        "raw_name": "Correlation Coefficient"
+      },
+      {
+        "canonical_name": "FMI",
+        "raw_name": "Feature Mutual Information"
+      },
+      {
+        "canonical_name": "F1",
+        "raw_name": "F1 score"
+      },
+      {
+        "canonical_name": "Precision",
+        "raw_name": "Precision"
+      },
+      {
+        "canonical_name": "Recall",
+        "raw_name": "Recall (macro average)"
+      },
+      {
+        "canonical_name": "Accuracy",
+        "raw_name": "Accuracy"
+      }
+    ],
+    "compared_methods": [
+      {
+        "name": "CSMCA",
+        "cite_number": 33
+      },
+      {
+        "name": "MedCNN",
+        "cite_number": 13
+      },
+      {
+        "name": "IFCNN",
+        "cite_number": 14
+      },
+      {
+        "name": "DDcGAN",
+        "cite_number": 17
+      },
+      {
+        "name": "PMGI",
+        "cite_number": 18
+      },
+      {
+        "name": "U2Fusion",
+        "cite_number": 19
+      },
+      {
+        "name": "SDNet",
+        "cite_number": 20
+      },
+      {
+        "name": "SwinFusion",
+        "cite_number": 27
+      },
+      {
+        "name": "M4FNet",
+        "cite_number": 23
+      },
+      {
+        "name": "IE-CFRN",
+        "cite_number": 22
+      },
+      {
+        "name": "SSTFusion",
+        "cite_number": 28
+      }
+    ]
+  }
+}

@@ -16,7 +16,7 @@ import cv2
 from scipy import ndimage as img
 from scipy import io as sio
 import matplotlib.pyplot as plt
-import pyshearlab
+import decomposition.python_code.pyshearlab as pyshearlab
 
 def adjointShearletDenoisingExample():
     tic()

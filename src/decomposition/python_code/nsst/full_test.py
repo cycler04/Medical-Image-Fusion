@@ -1,9 +1,9 @@
 import numpy as np
-from nsst_dec import nsst_dec
-from nsst_rec import nsst_rec1
+from decomposition.python_code.nsst.nsst_dec import nsst_dec
+from decomposition.python_code.nsst.nsst_rec import nsst_rec1
 import cv2
 import matplotlib.pyplot as plt
-from processing_ultis import stats
+from decomposition.python_code.nsst.processing_ultis import stats
 from time import time
 
 

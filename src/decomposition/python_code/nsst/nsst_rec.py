@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
-from atrousfilters import atrousfilters
-from processing_ultis import symext, upsample2df, atrousc
+from decomposition.python_code.nsst.atrousfilters import atrousfilters
+from decomposition.python_code.nsst.processing_ultis import symext, upsample2df, atrousc
 from scipy.signal import convolve2d
 
 def atrousrec(y, fname):
@@ -109,7 +109,7 @@ def nsst_rec1(dst, lpfilt):
     return x
 
 if __name__ == "__main__":
-    from processing_ultis import stats
+    from decomposition.python_code.nsst.processing_ultis import stats
     import scipy.io as sio
 
     data = sio.loadmat('nsst_data.mat')

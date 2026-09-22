@@ -1,0 +1,74 @@
+{
+  "title": "SDCM: Simulated Densifying and Compensatory Modeling Fusion for Radar-Vision 3-D Object Detection in Internet of Vehicles",
+  "year": 2020,
+  "paper_link": "https://arxiv.org/abs/2602.00149v1",
+  "github_link": "",
+  "fusion_modalities": [
+    "Radar-Vision"
+  ],
+  "method_diagram_fig": [
+    3
+  ],
+  "proposed_method_detail": {
+    "method_name": "SDCM",
+    "model_family": [
+      {
+        "name": "Mamba",
+        "role": "Primary fusion mechanism and image feature extraction"
+      },
+      {
+        "name": "CNN",
+        "role": "Radar feature extraction and vision degradation compensation"
+      },
+      {
+        "name": "Traditional non-DL",
+        "role": "Radar point cloud densification"
+      }
+    ],
+    "architecture_backbone": "RadarPillarNet and VMamba",
+    "image_transform_model": [
+      {
+        "canonical_name": "3-D Kernel Density Estimation",
+        "raw_name": "3-D Kernel Density Estimation"
+      },
+      {
+        "canonical_name": "Gaussian Simulation",
+        "raw_name": "Gaussian simulation"
+      },
+      {
+        "canonical_name": "Curvature Simulation",
+        "raw_name": "curvature simulation"
+      },
+      {
+        "canonical_name": "Depth Filtering",
+        "raw_name": "depth filtering"
+      }
+    ],
+    "contributions": [
+      {
+        "improvement": "Achieves best performance with lower parameter quantity and faster inference speed.",
+        "implementation_detail": "The method avoids using mechanisms with high computational complexity such as Transformer and Cross-Attention for feature extraction and multi-modality fusion.",
+        "improve_from": "Transformer and Cross-Attention based methods (e.g., SGDet3D, HGSFusion, IS-Fusion, RCDFNet, ZFusion)"
+      },
+      {
+        "improvement": "Generates dense radar point clouds.",
+        "implementation_detail": "The SimDen module uses Gaussian simulation for surface completion based on key points from 3-D KDE and depth filtering, and curvature simulation for outline generation.",
+        "improve_from": "Sparse 4-D radar point clouds"
+      },
+      {
+        "improvement": "Reduces the effect of representation degradation from vision data.",
+        "implementation_detail": "The RCM module uses radar features to compensate for vision degradation under several sizes of receptive fields.",
+        "improve_from": "Vision data degradation under low-light, long distance, and dense occlusion scenes"
+      },
+      {
+        "improvement": "Reduces heterogeneity and achieves feature interaction fusion.",
+        "implementation_detail": "The MMIF module extracts and models effective information from feature tensor difference values using a Mamba mechanism.",
+        "improve_from": "Heterogeneity between radar and vision data"
+      }
+    ],
+    "limitations": [
+      "The method has no obvious advantages on the detection of Cyclist category, mainly because SimDen module focuses more on the point cloud densifying of persons on the bicycles or motorcycles instead of the entirety, which brings false detection.",
+      "The method has no obvious advantages on the detection of Truck category because 3-D KDE values are close to uniform, leading to blank space on the point sets after Gaussian simulation."
+    ]
+  }
+}
