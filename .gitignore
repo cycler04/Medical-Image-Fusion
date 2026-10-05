@@ -31,19 +31,7 @@
 # ------------------------------------------------------------------------------
 # 3. Heavy Models, Checkpoints & Pretrained Weights
 # ------------------------------------------------------------------------------
-/models/runnable/
-/models/runnable
-/models/reference/
-/models/reference
-
-# Embedded datasets and generated outputs within model methods
-models/**/result/
-models/**/results/
-models/**/output/
-models/**/outputs/
-models/**/dataset/
-models/**/datasets/
-models/**/Harvard/
+/models/
 
 # Deep learning weights & model checkpoints
 *.pth

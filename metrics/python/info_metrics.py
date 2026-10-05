@@ -6,8 +6,9 @@ import cv2
 from skimage.util import view_as_windows
 from scipy.io import loadmat
 
+import os
 EPS = 1e-12
-DMEY_MAT_PATH = "dmey.mat"
+DMEY_MAT_PATH = os.path.join(os.path.dirname(__file__), "dmey.mat")
 
 
 # ──────────────────────────────────────────────
@@ -473,147 +474,116 @@ def _batch_patch_mi(x: np.ndarray, y: np.ndarray) -> np.ndarray:
     ey2 = (idx**2    * yPdf).sum(axis=1)
     xSd = np.sqrt(np.maximum(ex2 - ex**2, 0.0))               # (B,)
     ySd = np.sqrt(np.maximum(ey2 - ey**2, 0.0))
+    sd_prod = xSd * ySd
 
-    # ── 2-D CDF grids broadcast-free using pre-expanded slices ───────────────
-    # xCdf[:, :, None] → (B, L, 1), yCdf[:, None, :] → (B, 1, L)
-    xC  = xCdf[:, :,  None]    # (B, L,   1)  i
-    yC  = yCdf[:, None, :]     # (B, 1,   L)  j
-    xCm = xCdf[:, :-1, None]   # (B, L-1, 1)  i-1
-    yCm = yCdf[:, None, :-1]   # (B, 1, L-1)  j-1
+    xC2d = xCdf[:, :,  None]
+    yC2d = yCdf[:, None, :]
+
     def _accum_H(jpdf: np.ndarray) -> np.ndarray:
-        """Sum -p*log2|p| over last two axes → (B,).  Mirrors _accum_entropy."""
-        
         mask = jpdf != 0
-        out  = np.zeros(B, dtype=np.float64)
-        # safe log2: only evaluate where mask is true
         safe = np.where(mask, np.abs(jpdf), 1.0)
-        out  = -(np.where(mask, jpdf, 0.0) * np.log2(safe)).sum(axis=(-2, -1))
-        # print(out)
-        return out
+        return -(np.where(mask, jpdf, 0.0) * np.log2(safe)).sum(axis=(-2, -1))
 
-    def _joint_entropy_upper_batch(phi: np.ndarray) -> np.ndarray:
-        """Fréchet upper-bound copula, batched. phi: (B,)"""
-        ph = phi[:, None, None]   # broadcast over (L, L) grids
+    def _H1d(arr):
+        mask = arr != 0
+        safe = np.where(mask, np.abs(arr), 1.0)
+        return -(np.where(mask, arr, 0.0) * np.log2(safe)).sum(axis=-1)
 
-        def _min(a, b): return 0.5 * (a + b - np.abs(a - b))
+    pos_mask = c >= 0
+    neg_mask = ~pos_mask
+    jointH = np.zeros(B, dtype=np.float64)
 
-        mFG   = _min(xC,  yC)     # (B, L,   L  )
-        mFGim = _min(xCm, yC)     # (B, L-1, L  )
-        mFGjm = _min(xC,  yCm)    # (B, L,   L-1)
-        mFGij = _min(xCm, yCm)    # (B, L-1, L-1)
+    # Upper copula (for pos_mask)
+    if np.any(pos_mask):
+        sub_c = c[pos_mask]
+        sub_sd_prod = sd_prod[pos_mask]
+        sub_xC = xC2d[pos_mask]
+        sub_yC = yC2d[pos_mask]
+        sub_xCm = sub_xC[:, :-1, :]
+        sub_yCm = sub_yC[:, :, :-1]
+        sub_xPdf = xPdf[pos_mask]
+        sub_yPdf = yPdf[pos_mask]
 
-        H = np.zeros(B)
+        mFG = np.minimum(sub_xC, sub_yC)
+        covUp = (mFG - sub_xC * sub_yC).sum(axis=(-2, -1))
+        corrUp = np.zeros_like(covUp)
+        vc = sub_sd_prod != 0
+        corrUp[vc] = covUp[vc] / sub_sd_prod[vc]
 
-        # (0,0) corner
-        jp = ph[:, 0, 0] * mFG[:, 0, 0] + (1 - phi) * xPdf[:, 0] * yPdf[:, 0]
+        phi = np.zeros_like(sub_c)
+        vp = (sub_c != 0) & (sub_sd_prod != 0) & (corrUp != 0)
+        phi[vp] = sub_c[vp] / corrUp[vp]
+        ph = phi[:, None, None]
+
+        mFGim = np.minimum(sub_xCm, sub_yC)
+        mFGjm = np.minimum(sub_xC, sub_yCm)
+        mFGij = np.minimum(sub_xCm, sub_yCm)
+
+        B_sub = len(sub_c)
+        H_up = np.zeros(B_sub, dtype=np.float64)
+        jp = mFG[:, 0, 0] * phi + (1 - phi) * sub_xPdf[:, 0] * sub_yPdf[:, 0]
         pos = jp > 0
-        H[pos] += (-jp[pos] * np.log2(jp[pos])).real
+        H_up[pos] += (-jp[pos] * np.log2(jp[pos]))
 
-        # i-boundary (i>=1, j=0): shape (B, L-1)
-        up  = mFG[:, 1:, 0] - mFGim[:, :, 0]
-        jp_ = ph[:, :, 0] * up + (1 - ph[:, :, 0]) * xPdf[:, 1:] * yPdf[:, 0:1]
-        H  += _accum_H(jp_[:, :, None])[:] * 0  # placeholder — reshape to (B,L-1,1)
+        up = mFG[:, 1:, 0] - mFGim[:, :, 0]
+        jp_ = ph[:, :, 0] * up + (1 - ph[:, :, 0]) * sub_xPdf[:, 1:] * sub_yPdf[:, :1]
+        H_up += _H1d(jp_)
 
-        # easier: accumulate over axis=-1 only, keep (B, L-1) flat
-        def _H1d(arr):
-            mask = arr != 0
-            safe = np.where(mask, np.abs(arr), 1.0)
-            return -(np.where(mask, arr, 0.0) * np.log2(safe)).sum(axis=-1)
+        up = mFG[:, 0, 1:] - mFGjm[:, 0, :]
+        jp_ = ph[:, 0, :] * up + (1 - ph[:, 0, :]) * sub_xPdf[:, :1] * sub_yPdf[:, 1:]
+        H_up += _H1d(jp_)
 
-        # redo with 1-D accumulation
-        H = np.zeros(B)
-        jp = mFG[:, 0, 0] * phi + (1 - phi) * xPdf[:, 0] * yPdf[:, 0]
-        pos = jp > 0
-        H[pos] += (-jp[pos] * np.log2(jp[pos]))
+        up = mFG[:, 1:, 1:] - mFGim[:, :, 1:] - mFGjm[:, 1:, :] + mFGij
+        jp_ = ph * up + (1 - ph) * sub_xPdf[:, 1:, None] * sub_yPdf[:, None, 1:]
+        H_up += _accum_H(jp_)
 
-        up   = mFG[:, 1:, 0] - mFGim[:, :, 0]               # (B, L-1)
-        jp_  = ph[:, :, 0] * up + (1-ph[:, :, 0]) * xPdf[:, 1:] * yPdf[:, :1]
-        H   += _H1d(jp_)
+        jointH[pos_mask] = H_up
 
-        up   = mFG[:, 0, 1:] - mFGjm[:, 0, :]               # (B, L-1)
-        jp_  = ph[:, 0, :] * up + (1-ph[:, 0, :]) * xPdf[:, :1] * yPdf[:, 1:]
-        H   += _H1d(jp_)
+    # Lower copula (for neg_mask)
+    if np.any(neg_mask):
+        sub_c = c[neg_mask]
+        sub_sd_prod = sd_prod[neg_mask]
+        sub_xC = xC2d[neg_mask]
+        sub_yC = yC2d[neg_mask]
+        sub_xCm = sub_xC[:, :-1, :]
+        sub_yCm = sub_yC[:, :, :-1]
+        sub_xPdf = xPdf[neg_mask]
+        sub_yPdf = yPdf[neg_mask]
 
-        up   = mFG[:,1:,1:] - mFGim[:,:,1:] - mFGjm[:,1:,:] + mFGij  # (B,L-1,L-1)
-        jp_  = ph * up + (1-ph) * xPdf[:, 1:, None] * yPdf[:, None, 1:]
-        H   += _accum_H(jp_)
+        mFG = np.maximum(sub_xC + sub_yC - 1.0, 0.0)
+        covLo = (mFG - sub_xC * sub_yC).sum(axis=(-2, -1))
+        corrLo = np.zeros_like(covLo)
+        vc = sub_sd_prod != 0
+        corrLo[vc] = covLo[vc] / sub_sd_prod[vc]
 
-        return H
-
-    def _joint_entropy_lower_batch(theta: np.ndarray) -> np.ndarray:
-        """Fréchet lower-bound copula, batched. theta: (B,)"""
+        theta = np.zeros_like(sub_c)
+        vt = (sub_sd_prod != 0) & (corrLo != 0)
+        theta[vt] = sub_c[vt] / corrLo[vt]
         th = theta[:, None, None]
 
-        def _max(a, b): return 0.5 * (a + b - 1 + np.abs(a + b - 1))
+        mFGim = np.maximum(sub_xCm + sub_yC - 1.0, 0.0)
+        mFGjm = np.maximum(sub_xC + sub_yCm - 1.0, 0.0)
+        mFGij = np.maximum(sub_xCm + sub_yCm - 1.0, 0.0)
 
-        mFG   = _max(xC,  yC)
-        mFGim = _max(xCm, yC)
-        mFGjm = _max(xC,  yCm)
-        mFGij = _max(xCm, yCm)
-
-        def _H1d(arr):
-            mask = arr != 0
-            safe = np.where(mask, np.abs(arr), 1.0)
-            return -(np.where(mask, arr, 0.0) * np.log2(safe)).sum(axis=-1)
-
-        H = np.zeros(B)
-        jp = mFG[:, 0, 0] * theta + (1-theta) * xPdf[:, 0] * yPdf[:, 0]
-
+        B_sub = len(sub_c)
+        H_lo = np.zeros(B_sub, dtype=np.float64)
+        jp = mFG[:, 0, 0] * theta + (1 - theta) * sub_xPdf[:, 0] * sub_yPdf[:, 0]
         nz = jp != 0
-        H[nz] += -jp[nz] * np.log2(np.abs(jp[nz]))
+        H_lo[nz] += -jp[nz] * np.log2(np.abs(jp[nz]))
 
-        lo  = mFG[:, 0, 1:] - mFGjm[:, 0, :]
-        jp_ = th[:, 0, :] * lo + (1-th[:, 0, :]) * xPdf[:, :1] * yPdf[:, 1:]
-        H  += _H1d(jp_)
+        lo = mFG[:, 0, 1:] - mFGjm[:, 0, :]
+        jp_ = th[:, 0, :] * lo + (1 - th[:, 0, :]) * sub_xPdf[:, :1] * sub_yPdf[:, 1:]
+        H_lo += _H1d(jp_)
 
-        lo  = mFG[:, 1:, 0] - mFGim[:, :, 0]
-        jp_ = th[:, :, 0] * lo + (1-th[:, :, 0]) * xPdf[:, 1:] * yPdf[:, :1]
-        H  += _H1d(jp_)
+        lo = mFG[:, 1:, 0] - mFGim[:, :, 0]
+        jp_ = th[:, :, 0] * lo + (1 - th[:, :, 0]) * sub_xPdf[:, 1:] * sub_yPdf[:, :1]
+        H_lo += _H1d(jp_)
 
-        lo  = mFG[:,1:,1:] - mFGim[:,:,1:] - mFGjm[:,1:,:] + mFGij
-        jp_ = th * lo + (1-th) * xPdf[:,1:,None] * yPdf[:,None,1:]
-        H  += _accum_H(jp_)
+        lo = mFG[:, 1:, 1:] - mFGim[:, :, 1:] - mFGjm[:, 1:, :] + mFGij
+        jp_ = th * lo + (1 - th) * sub_xPdf[:, 1:, None] * sub_yPdf[:, None, 1:]
+        H_lo += _accum_H(jp_)
 
-        return H
-
-    # ── route each patch to upper or lower copula ────────────────────────────
-    pos_mask = c >= 0    # (B,)
-
-    # phi for positive-c patches
-    xC2d = xCdf[:, :, None]   # reuse
-    yC2d = yCdf[:, None, :]
-    def _min2(a, b): return 0.5 * (a + b - np.abs(a - b))
-    def _max2(a, b): return 0.5 * (a + b - 1 + np.abs(a + b - 1))
-
-    # ── phi (upper copula) ───────────────────────────────────────────────────────
-    covUp  = (_min2(xC2d, yC2d) - xC2d * yC2d).sum(axis=(-2, -1))
-    sd_prod = xSd * ySd
-
-    # Step 1: safe corrUp
-    corrUp = np.zeros_like(covUp)
-    valid_corr = sd_prod != 0
-    corrUp[valid_corr] = covUp[valid_corr] / sd_prod[valid_corr]
-
-    # Step 2: safe phi (match scalar logic exactly)
-    phi = np.zeros_like(c)
-    valid_phi = (c != 0) & (xSd != 0) & (ySd != 0) & (corrUp != 0)
-    phi[valid_phi] = c[valid_phi] / corrUp[valid_phi]
-
-    # ── theta (lower copula) ─────────────────────────────────────────────────────
-    covLo  = (_max2(xC2d, yC2d) - xC2d * yC2d).sum(axis=(-2, -1))
-    sd_prod = xSd * ySd
-        
-    corrLo = np.zeros_like(covLo)
-    valid_corr = sd_prod != 0
-    corrLo[valid_corr] = covLo[valid_corr] / sd_prod[valid_corr]    
-    theta = np.zeros_like(c)
-    
-    valid_theta = (xSd != 0) & (ySd != 0) & (corrLo != 0)
-    theta[valid_theta] = c[valid_theta] / corrLo[valid_theta]
-    # compute both branches, select by mask (avoids conditionals over B)
-    H_upper = _joint_entropy_upper_batch(phi)
-    H_lower = _joint_entropy_lower_batch(theta)
-    jointH  = np.where(pos_mask, H_upper, H_lower)   # (B,)
+        jointH[neg_mask] = H_lo
 
     # ── marginal entropies ───────────────────────────────────────────────────
     def _marginal_H(pdf):
