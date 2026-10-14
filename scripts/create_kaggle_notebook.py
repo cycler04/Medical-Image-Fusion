@@ -1,52 +1,43 @@
 #!/usr/bin/env python3
 """
-Generates the self-contained train_inet_kaggle.ipynb notebook
-configured for Distributed Multi-GPU Training (2x NVIDIA Tesla T4 GPUs).
+Generates MMIF-INet Kaggle Notebooks and sets up 3 independent Kaggle jobs:
+1. Task 1 (Baseline): Paper setup (PET-MRI, SPECT-MRI, ks=1.0)
+2. Task 2 (Job 1 with CT): 3 modalities (CT-MRI, PET-MRI, SPECT-MRI) with NO color loss (ks=0.0)
+3. Task 3 (Job 2 with CT): 3 modalities with conditional color loss (ks=1.0 on PET/SPECT, 0 on CT)
 """
 import nbformat as nbf
 import os
+import copy
+import json
 
-nb = nbf.v4.new_notebook()
+def build_notebook(experiment_name='job1_with_ct', per_gpu_batch=128, val_freq=100):
+    nb = nbf.v4.new_notebook()
+    cells = []
 
-cells = []
-
-# Cell 1: Markdown header
-cells.append(nbf.v4.new_markdown_cell("""# Multimodal Medical Image Fusion (MMIF-INet) Distributed Training
-### Accelerated Distributed Multi-GPU Pipeline on 2x NVIDIA Tesla T4 GPUs
-
-This notebook implements distributed end-to-end training and evaluation for **MMIF-INet** (Multimodal Medical Image Fusion with Invertible Network) utilizing **dual NVIDIA Tesla T4 GPUs** (16GB VRAM each).
+    # Cell 1: Markdown header
+    cells.append(nbf.v4.new_markdown_cell(f"""# Multimodal Medical Image Fusion (MMIF-INet) Training
+### Accelerated Multi-GPU Pipeline on Dual NVIDIA Tesla T4 GPUs (`GPU T4 x2`)
+**Active Experiment Target**: `{experiment_name}`
 
 ---
 
-### Features & Multi-GPU Capabilities:
-1. **Dual T4 GPU Acceleration**:
-   - Automatic detection of `cuda:0` and `cuda:1`.
-   - Scaled effective batch size (`batch_size = 16 * num_gpus = 32`).
-   - Mixed-precision (`torch.amp.autocast`) accelerating Tensor Cores on T4 GPUs by ~2-3x.
-   - High-throughput pinned memory data loading with multi-process worker prefetching.
-2. **Zero-Setup Data Portability**:
-   - Detects mounted Kaggle dataset (`/kaggle/input/...`)
-   - Detects local workspace datasets
-   - Auto-clones official Harvard-AANLIB dataset from GitHub in ~5s if no local copy is present.
-3. **Supports All 3 Work Plan Configurations**:
-   - **Baseline Retraining**: Exact paper reproduction ($\\\\alpha=3.0, \\\\beta=1.0, \\\\gamma=1.0, ks=1.0$).
-   - **Job 1 (Altered Parameters)**: Focus on gradient/texture ($\\\\beta=2.0$) and color retention ($ks=2.0$).
-   - **Job 2 (CT/MRI Joint Training)**: Three-task joint training (PET-MRI, SPECT-MRI, CT-MRI) with **conditional color loss** (supervises color on PET/SPECT, disables color loss on CT).
-4. **Comprehensive Evaluation & Checkpointing**:
-   - Tracks SSIM, VIFF, CC, SCD, AG, SF during training.
-   - Cleanly unwraps distributed modules (`net.module`) when checkpointing.
-   - Saves best checkpoints (by VIFF and SSIM) and final model weights to Kaggle working storage.
-5. **Visual Inspection**:
-   - Compares test slices side-by-side: `[MRI Input] | [Functional/CT Input] | [INet Fused Output]`.
+### Available Work Plan Tasks:
+1. **`baseline`**: Exact paper reproduction on PET-MRI and SPECT-MRI ($\\\\alpha=3.0, \\\\beta=1.0, \\\\gamma=1.0, ks=1.0$).
+2. **`job1_with_ct`**: Joint 3-modality training (CT-MRI, PET-MRI, SPECT-MRI) with **NO color loss** ($ks=0.0$, anatomical & functional fusion without chrominance loss).
+3. **`job2_with_ct`**: Joint 3-modality training (CT-MRI, PET-MRI, SPECT-MRI) with **conditional color loss** ($ks=1.0$, color supervision active on PET/SPECT, disabled on CT).
+
+### Optimizations:
+- **Fast In-Memory RAM Buffering**: Entire Harvard-AANLIB dataset (61 MB) buffered once into RAM in ~1.4s, eliminating 1,476,000 disk I/O & PNG decompressions.
+- **Microsecond Tensor Augmentations**: Crop and flips executed directly in PyTorch memory.
+- **Dual T4 Acceleration**: Multi-GPU `DataParallel` with automatic batch scaling (`BATCH_SIZE = {per_gpu_batch} * num_gpus`).
+- **AMP Mixed Precision**: FP16 Tensor Core execution for high throughput.
 """))
 
-# Cell 2: Markdown
-cells.append(nbf.v4.new_markdown_cell("""## 1. System Environment & Dual T4 GPU Diagnostics
-Verify PyTorch, CUDA runtime, detect both NVIDIA Tesla T4 GPUs, and initialize random seeds.
-"""))
+    # Cell 2: Markdown
+    cells.append(nbf.v4.new_markdown_cell("""## 1. System Environment & Dual T4 GPU Diagnostics"""))
 
-# Cell 3: Code
-cells.append(nbf.v4.new_code_cell("""import os
+    # Cell 3: Code
+    cells.append(nbf.v4.new_code_cell("""import os
 import sys
 import time
 import math
@@ -100,14 +91,11 @@ seed_everything(42)
 print("Hardware diagnostics and seeding complete.")
 """))
 
-# Cell 4: Markdown
-cells.append(nbf.v4.new_markdown_cell("""## 2. Dataset Acquisition & Verification
-Detects if Harvard-AANLIB dataset is already available locally or in Kaggle's `/kaggle/input/`.
-If neither is found, it clones `https://github.com/xianming-gu/Havard-Medical-Image-Fusion-Datasets.git` directly.
-"""))
+    # Cell 4: Markdown
+    cells.append(nbf.v4.new_markdown_cell("""## 2. Dataset Acquisition & Verification"""))
 
-# Cell 5: Code
-cells.append(nbf.v4.new_code_cell("""def setup_harvard_dataset():
+    # Cell 5: Code
+    cells.append(nbf.v4.new_code_cell("""def setup_harvard_dataset():
     # 1. Search Kaggle input mounts
     kaggle_mounts = [
         '/kaggle/input/havard-medical-image-fusion-datasets',
@@ -149,7 +137,6 @@ cells.append(nbf.v4.new_code_cell("""def setup_harvard_dataset():
 DATA_ROOT = setup_harvard_dataset()
 print(f"Active DATA_ROOT: {DATA_ROOT}\\n")
 
-# Verify availability of modalities
 tasks = ['PET-MRI', 'SPECT-MRI', 'CT-MRI']
 mod_map = {'PET-MRI': 'PET', 'SPECT-MRI': 'SPECT', 'CT-MRI': 'CT'}
 for task in tasks:
@@ -161,13 +148,11 @@ for task in tasks:
         print(f"  [{task:>9} | {split:>5}]  MRI: {n_mri:3d}  |  {mod_map[task]:>5}: {n_mod:3d} pairs")
 """))
 
-# Cell 6: Markdown
-cells.append(nbf.v4.new_markdown_cell("""## 3. Dataset Classes & High-Throughput Multi-GPU DataLoaders
-Implements `PairedTransform` (cropsize 128, synchronized random crop and horizontal/vertical flips) and `MedicalFusionDataset` supporting multi-task combinations and conditional color flags.
-"""))
+    # Cell 6: Markdown
+    cells.append(nbf.v4.new_markdown_cell("""## 3. High-Speed RAM-Buffered Dataset & DataLoaders"""))
 
-# Cell 7: Code
-cells.append(nbf.v4.new_code_cell("""class PairedTransform:
+    # Cell 7: Code
+    cells.append(nbf.v4.new_code_cell("""class PairedTransform:
     def __init__(self, cropsize, is_train=True):
         self.cropsize = cropsize
         self.is_train = is_train
@@ -232,7 +217,7 @@ class MedicalFusionDataset(Dataset):
                     is_color
                 ))
 
-        # In-Memory RAM Buffer (Eliminates disk I/O and PNG decompression during training)
+        # In-Memory RAM Buffer (Eliminates repeated disk I/O and PNG decompression)
         if self.preload_to_ram and len(self.pairs) > 0:
             print(f"[{split:>5}] Pre-loading {len(self.pairs)} image pairs into RAM buffer...")
             t0 = time.time()
@@ -296,20 +281,22 @@ class MedicalFusionDataset(Dataset):
         return data0, data1
 
 
-def get_dataloaders(data_root, tasks=('PET-MRI', 'SPECT-MRI'), batch_size=32, cropsize=128, cropsize_val=256, return_color_flag=False, num_workers=4):
+def get_dataloaders(data_root, tasks=('PET-MRI', 'SPECT-MRI'), batch_size=32, cropsize=128, cropsize_val=256, return_color_flag=False, num_workers=2):
     train_ds = MedicalFusionDataset(
         data_root=data_root,
         tasks=tasks,
         split='train',
         cropsize=cropsize,
-        return_color_flag=return_color_flag
+        return_color_flag=return_color_flag,
+        preload_to_ram=True
     )
     val_ds = MedicalFusionDataset(
         data_root=data_root,
         tasks=tasks,
         split='test',
         cropsize=cropsize_val,
-        return_color_flag=return_color_flag
+        return_color_flag=return_color_flag,
+        preload_to_ram=True
     )
     train_loader = DataLoader(
         train_ds,
@@ -317,26 +304,23 @@ def get_dataloaders(data_root, tasks=('PET-MRI', 'SPECT-MRI'), batch_size=32, cr
         shuffle=True,
         pin_memory=True,
         num_workers=num_workers,
-        drop_last=True
+        drop_last=False
     )
     val_loader = DataLoader(
         val_ds,
         batch_size=1,
         shuffle=False,
         pin_memory=True,
-        num_workers=max(1, num_workers // 2)
+        num_workers=1
     )
     return train_loader, val_loader
 """))
 
-# Cell 8: Markdown
-cells.append(nbf.v4.new_markdown_cell("""## 4. Wavelet Operations (Haar DWT & IWT)
-Implements 2D Discrete Wavelet Transform (decomposition) and Inverse Wavelet Transform (reconstruction).
-Handles arbitrary device placement dynamically (`x.device`, `x.dtype`).
-"""))
+    # Cell 8: Markdown
+    cells.append(nbf.v4.new_markdown_cell("""## 4. Wavelet Operations (Haar DWT & IWT)"""))
 
-# Cell 9: Code
-cells.append(nbf.v4.new_code_cell("""def dwt_init(x):
+    # Cell 9: Code
+    cells.append(nbf.v4.new_code_cell("""def dwt_init(x):
     x01 = x[:, :, 0::2, :] / 2.0
     x02 = x[:, :, 1::2, :] / 2.0
     x1 = x01[:, :, :, 0::2]
@@ -388,15 +372,11 @@ class IWT(nn.Module):
         return iwt_init(x)
 """))
 
-# Cell 10: Markdown
-cells.append(nbf.v4.new_markdown_cell("""## 5. Residual Dense Subnetworks (RRDB) & Invertible Coupling Blocks
-Building blocks for the multi-scale invertible feature representation:
-- `ResidualDenseBlock_out`: 5-layer densely connected convolutional subnetwork.
-- `INV_block`: Affine coupling block with exponentiated scaling and translation.
-"""))
+    # Cell 10: Markdown
+    cells.append(nbf.v4.new_markdown_cell("""## 5. Residual Dense Subnetworks (RRDB) & Invertible Coupling Blocks"""))
 
-# Cell 11: Code
-cells.append(nbf.v4.new_code_cell("""def initialize_weights(net_l, scale=1.0):
+    # Cell 11: Code
+    cells.append(nbf.v4.new_code_cell("""def initialize_weights(net_l, scale=1.0):
     if not isinstance(net_l, list):
         net_l = [net_l]
     for net in net_l:
@@ -465,13 +445,11 @@ class INV_block(nn.Module):
         return y1, y2
 """))
 
-# Cell 12: Markdown
-cells.append(nbf.v4.new_markdown_cell("""## 6. INet Full Model Architecture
-3-level multi-scale wavelet decomposition network with invertible coupling blocks, adaptive frequency-aware sigmoid gating, and progressive upsampled reconstruction.
-"""))
+    # Cell 12: Markdown
+    cells.append(nbf.v4.new_markdown_cell("""## 6. INet Full Model Architecture"""))
 
-# Cell 13: Code
-cells.append(nbf.v4.new_code_cell("""class INet(nn.Module):
+    # Cell 13: Code
+    cells.append(nbf.v4.new_code_cell("""class INet(nn.Module):
     def __init__(self, in_c1=3, in_c2=3, block_num=[2, 1, 1]):
         super(INet, self).__init__()
         self.in_c1 = in_c1
@@ -602,17 +580,11 @@ print(f"-> Model verified successfully! Input: {sample_input.shape} -> Output: {
 print(f"-> Total Trainable Parameters: {total_params:,}")
 """))
 
-# Cell 14: Markdown
-cells.append(nbf.v4.new_markdown_cell("""## 7. Loss Functions & Color Space Supervision
-Supervises luminance ($Y$) and chrominance ($Cb, Cr$) channels:
-- **Structural Similarity Loss** ($r\\_loss$): SSIM between fusion output and source modalities.
-- **Edge / Gradient Loss** ($g\\_loss$): Sobel edge preservation.
-- **Content & Color Loss** ($l\\_loss$): Weighted MSE for anatomical detail and chromatic preservation.
-- **Conditional Color Flag**: Applied during Job 2 to prevent color distortion on grayscale CT images.
-"""))
+    # Cell 14: Markdown
+    cells.append(nbf.v4.new_markdown_cell("""## 7. Loss Functions & Conditional Color Logic"""))
 
-# Cell 15: Code
-cells.append(nbf.v4.new_code_cell("""def rgb2ycbcr_t(img_rgb):
+    # Cell 15: Code
+    cells.append(nbf.v4.new_code_cell("""def rgb2ycbcr_t(img_rgb):
     R = img_rgb[:, 0, :, :].unsqueeze(1)
     G = img_rgb[:, 1, :, :].unsqueeze(1)
     B = img_rgb[:, 2, :, :].unsqueeze(1)
@@ -689,19 +661,11 @@ def ssim_loss_calc(img1, img2, img3, window_size=11, channel=1):
     return ssim_map_std.mean()
 """))
 
-# Cell 16: Markdown
-cells.append(nbf.v4.new_markdown_cell("""## 8. Validation Evaluation Metrics
-Implements pure Python / NumPy / SciPy validation metrics:
-- **SSIM**: Structural Similarity
-- **VIFF**: Visual Information Fidelity for Fusion (Sheikh & Bovik, 2006)
-- **CC**: Cross Correlation
-- **SCD**: Sum of Correlations of Differences
-- **SD**: Standard Deviation
-- **AG & SF**: Average Gradient and Spatial Frequency
-"""))
+    # Cell 16: Markdown
+    cells.append(nbf.v4.new_markdown_cell("""## 8. Validation Evaluation Metrics"""))
 
-# Cell 17: Code
-cells.append(nbf.v4.new_code_cell("""def calc_ssim_np(img1, img2, window_size=11, sigma=1.5):
+    # Cell 17: Code
+    cells.append(nbf.v4.new_code_cell("""def calc_ssim_np(img1, img2, window_size=11, sigma=1.5):
     ax = np.arange(window_size) - window_size // 2
     kernel1d = np.exp(-ax ** 2 / (2.0 * sigma ** 2))
     kernel1d /= kernel1d.sum()
@@ -827,53 +791,48 @@ def calc_evaluator(A, B, F):
     return float(SD + CC_ALL + SCD_ALL), float(SF + AG_f)
 """))
 
-# Cell 18: Markdown
-cells.append(nbf.v4.new_markdown_cell("""## 9. Distributed Multi-GPU Hyperparameters & Configuration
-Select your experiment mode and configure multi-GPU scaling:
-- **Batch Size Scaling**: `BATCH_SIZE = PER_GPU_BATCH_SIZE * NUM_GPUS` (e.g. 16 per GPU &rarr; 32 total).
-- **AMP Mixed Precision**: Enables FP16 Tensor Core acceleration on T4 GPUs.
-- **Learning Rate Scaling**: Scaled with $\\\\sqrt{\\\\text{num\\_gpus}}$ for stable convergence.
-"""))
+    # Cell 18: Markdown
+    cells.append(nbf.v4.new_markdown_cell("""## 9. Distributed Multi-GPU Hyperparameters & Configuration"""))
 
-# Cell 19: Code
-cells.append(nbf.v4.new_code_cell("""# ==============================================================================
+    # Cell 19: Code
+    cells.append(nbf.v4.new_code_cell(f"""# ==============================================================================
 # Select Experiment Configuration
-# Options: 'job2_with_ct' | 'job1_altered' | 'baseline'
+# Options: 'baseline' | 'job1_with_ct' | 'job2_with_ct'
 # ==============================================================================
-EXPERIMENT = 'job2_with_ct'
+EXPERIMENT = '{experiment_name}'
 
-CONFIG_PRESETS = {
-    'baseline': {
+CONFIG_PRESETS = {{
+    'baseline': {{
         'tasks': ('PET-MRI', 'SPECT-MRI'),
         'return_color_flag': False,
         'alpha': 3.0,
         'beta': 1.0,
         'gamma': 1.0,
-        'ks': 1.0,
+        'ks': 1.0,        # Standard color loss on PET/SPECT
         'mse_w': 0.01,
         'tag': 'baseline_paper_loss'
-    },
-    'job1_altered': {
-        'tasks': ('PET-MRI', 'SPECT-MRI'),
+    }},
+    'job1_with_ct': {{
+        'tasks': ('PET-MRI', 'SPECT-MRI', 'CT-MRI'),
         'return_color_flag': False,
         'alpha': 3.0,
-        'beta': 2.0,      # Enhanced gradient supervision
+        'beta': 1.0,
         'gamma': 1.0,
-        'ks': 2.0,        # Enhanced functional color preservation
+        'ks': 0.0,        # NO color loss: 3 modalities (CT, PET, SPECT) trained with 0 color loss
         'mse_w': 0.01,
-        'tag': 'job1_grad2_color2'
-    },
-    'job2_with_ct': {
+        'tag': 'job1_joint_ct_no_color'
+    }},
+    'job2_with_ct': {{
         'tasks': ('PET-MRI', 'SPECT-MRI', 'CT-MRI'),
         'return_color_flag': True,  # Enables conditional color loss
         'alpha': 3.0,
-        'beta': 2.0,
+        'beta': 1.0,
         'gamma': 1.0,
-        'ks': 2.0,
+        'ks': 1.0,        # Active on functional PET/SPECT, 0 on CT
         'mse_w': 0.01,
         'tag': 'job2_joint_ct_conditional_color'
-    }
-}
+    }}
+}}
 
 cfg = CONFIG_PRESETS[EXPERIMENT]
 
@@ -882,8 +841,8 @@ NUM_GPUS = torch.cuda.device_count()
 USE_MULTI_GPU = (NUM_GPUS >= 2)
 GPU_IDS = list(range(NUM_GPUS)) if NUM_GPUS > 0 else []
 
-PER_GPU_BATCH = 16
-BATCH_SIZE = PER_GPU_BATCH * max(1, NUM_GPUS)  # 32 when running on 2x T4 GPUs!
+PER_GPU_BATCH = {per_gpu_batch}
+BATCH_SIZE = PER_GPU_BATCH * max(1, NUM_GPUS)
 NUM_WORKERS = min(8, 4 * max(1, NUM_GPUS))
 
 # Scaled Hyperparameters
@@ -896,7 +855,7 @@ WEIGHT_DECAY = 1e-5
 BETAS = (0.9, 0.999)
 WEIGHT_STEP = 1000
 GAMMA_SCHED = 0.5
-VAL_FREQ = 10             # Validate every 10 epochs
+VAL_FREQ = {val_freq}
 
 # Automatic Mixed Precision (AMP FP16) for Tensor Cores
 USE_AMP = torch.cuda.is_available()
@@ -904,29 +863,28 @@ USE_AMP = torch.cuda.is_available()
 # Output directories
 SAVE_ROOT = '/kaggle/working/checkpoints' if os.path.exists('/kaggle/working') else './checkpoints'
 TIMESTAMP = time.strftime('%Y%m%d_%H%M%S')
-EXP_SAVE_DIR = os.path.join(SAVE_ROOT, f"{cfg['tag']}_{TIMESTAMP}")
+EXP_SAVE_DIR = os.path.join(SAVE_ROOT, f"{{cfg['tag']}}_{{TIMESTAMP}}")
 os.makedirs(EXP_SAVE_DIR, exist_ok=True)
 
 print("=" * 70)
-print(f"EXPERIMENT: {EXPERIMENT.upper()} ({cfg['tag']})")
-print(f"Multi-GPU Mode:  {'ACTIVE (2x T4 GPUs)' if USE_MULTI_GPU else 'Single GPU / CPU'}")
-print(f"Active Devices:  {GPU_IDS}")
-print(f"Batch Size:      {BATCH_SIZE} ({PER_GPU_BATCH} per GPU across {max(1, NUM_GPUS)} device(s))")
-print(f"Data Workers:    {NUM_WORKERS}")
-print(f"Learning Rate:   {LR:.8f} (Base: {BASE_LR:.8f}, Scaled by sqrt({max(1, NUM_GPUS)}))")
-print(f"AMP FP16 Mode:   {'ENABLED (Tensor Core Boost)' if USE_AMP else 'DISABLED'}")
-print(f"Loss Weights:    alpha={cfg['alpha']}, beta={cfg['beta']}, gamma={cfg['gamma']}, ks={cfg['ks']}, mse_w={cfg['mse_w']}")
-print(f"Checkpoints Dir: {EXP_SAVE_DIR}")
+print(f"EXPERIMENT:      {{EXPERIMENT.upper()}} ({{cfg['tag']}})")
+print(f"Tasks:           {{cfg['tasks']}}")
+print(f"Multi-GPU Mode:  {{'ACTIVE (2x T4 GPUs)' if USE_MULTI_GPU else 'Single GPU / CPU'}}")
+print(f"Active Devices:  {{GPU_IDS}}")
+print(f"Batch Size:      {{BATCH_SIZE}} ({{PER_GPU_BATCH}} per GPU across {{max(1, NUM_GPUS)}} device(s))")
+print(f"Data Workers:    {{NUM_WORKERS}}")
+print(f"Learning Rate:   {{LR:.8f}} (Base: {{BASE_LR:.8f}}, Scaled by sqrt({{max(1, NUM_GPUS)}}))")
+print(f"AMP FP16 Mode:   {{'ENABLED (Tensor Core Boost)' if USE_AMP else 'DISABLED'}}")
+print(f"Loss Weights:    alpha={{cfg['alpha']}}, beta={{cfg['beta']}}, gamma={{cfg['gamma']}}, ks={{cfg['ks']}}, mse_w={{cfg['mse_w']}}")
+print(f"Checkpoints Dir: {{EXP_SAVE_DIR}}")
 print("=" * 70)
 """))
 
-# Cell 20: Markdown
-cells.append(nbf.v4.new_markdown_cell("""## 10. Execute Distributed INet Training Loop
-Initializes the model wrapped with `torch.nn.DataParallel` across both Tesla T4 GPUs, scales gradients with `torch.amp.GradScaler`, runs the epoch training loop with periodic validation, and automatically checkpoints the best models.
-"""))
+    # Cell 20: Markdown
+    cells.append(nbf.v4.new_markdown_cell("""## 10. Execute Distributed INet Training Loop"""))
 
-# Cell 21: Code
-cells.append(nbf.v4.new_code_cell("""# 1. Prepare Distributed Data Loaders
+    # Cell 21: Code
+    cells.append(nbf.v4.new_code_cell("""# 1. Prepare Distributed Data Loaders
 trainloader, testloader = get_dataloaders(
     data_root=DATA_ROOT,
     tasks=cfg['tasks'],
@@ -997,14 +955,19 @@ for epoch in range(1, EPOCHS + 1):
             # Gradient Loss
             grad_loss = Grad_loss(F_Y)
 
-            # Color Supervision (Conditional if Job 2, or standard if Baseline/Job 1)
-            if cfg['return_color_flag'] and is_col is not None:
+            # Color Supervision:
+            if cfg['ks'] == 0.0:
+                # Job 1 with CT: NO color loss applied to any modality
+                mse_chro = torch.tensor(0.0, device=primary_device)
+            elif cfg['return_color_flag'] and is_col is not None:
+                # Job 2 with CT: Conditional color loss (active on PET/SPECT, 0 on CT)
                 diff_cb = (F_Cb - OTHER_Cb) ** 2
                 diff_cr = (F_Cr - OTHER_Cr) ** 2
                 diff_chro = (diff_cb + diff_cr).mean(dim=[1, 2, 3])
                 col_count = is_col.sum()
                 mse_chro = (diff_chro * is_col).sum() / (col_count + 1e-8) if col_count > 0 else torch.tensor(0.0, device=primary_device)
             else:
+                # Baseline: Standard color loss across all pairs
                 mse_chro = guide_loss(F_Cb, OTHER_Cb) + guide_loss(F_Cr, OTHER_Cr)
 
             l_loss = cfg['gamma'] * mse_Y + cfg['ks'] * mse_chro
@@ -1114,13 +1077,11 @@ print(f"Checkpoints directory: {EXP_SAVE_DIR}")
 print(f"{'='*70}")
 """))
 
-# Cell 22: Markdown
-cells.append(nbf.v4.new_markdown_cell("""## 11. Convergence & Training Metrics Visualization
-Plots total loss, loss components (SSIM, Edge Gradient, Color), and validation quality scores (SSIM, VIFF) across training epochs.
-"""))
+    # Cell 22: Markdown
+    cells.append(nbf.v4.new_markdown_cell("""## 11. Convergence & Training Metrics Visualization"""))
 
-# Cell 23: Code
-cells.append(nbf.v4.new_code_cell("""fig, axes = plt.subplots(1, 3, figsize=(18, 5))
+    # Cell 23: Code
+    cells.append(nbf.v4.new_code_cell("""fig, axes = plt.subplots(1, 3, figsize=(18, 5))
 
 # Total Loss Curve
 axes[0].plot(history['epoch'], history['loss'], color='#1f77b4', lw=2, label='Total Loss')
@@ -1157,13 +1118,11 @@ plt.show()
 print(f"Saved training plot to: {plot_path}")
 """))
 
-# Cell 24: Markdown
-cells.append(nbf.v4.new_markdown_cell("""## 12. Visual Evaluation & Inspection of Fusion Results
-Loads the best trained checkpoint and visualizes fusion results on test pairs across PET-MRI, SPECT-MRI, and CT-MRI.
-"""))
+    # Cell 24: Markdown
+    cells.append(nbf.v4.new_markdown_cell("""## 12. Visual Evaluation & Inspection of Fusion Results"""))
 
-# Cell 25: Code
-cells.append(nbf.v4.new_code_cell("""# Load the Best Checkpoint for Evaluation
+    # Cell 25: Code
+    cells.append(nbf.v4.new_code_cell("""# Load the Best Checkpoint for Evaluation
 eval_net = Model().to(primary_device)
 ckpt_to_load = best_model_path if os.path.exists(best_model_path) else final_ckpt_path
 state = torch.load(ckpt_to_load, map_location=primary_device)
@@ -1214,23 +1173,86 @@ plt.show()
 print(f"Saved visual fusion samples to: {results_plot_path}")
 """))
 
-nb['cells'] = cells
-nb['metadata'] = {
-    'kernelspec': {
-        'display_name': 'Python 3',
-        'language': 'python',
-        'name': 'python3'
-    },
-    'language_info': {
-        'name': 'python',
-        'version': '3.11.0'
-    },
-    'accelerator': 'GPU'
-}
+    nb['cells'] = cells
+    nb['metadata'] = {
+        'kernelspec': {
+            'display_name': 'Python 3',
+            'language': 'python',
+            'name': 'python3'
+        },
+        'language_info': {
+            'name': 'python',
+            'version': '3.11.0'
+        },
+        'accelerator': 'GPU'
+    }
+    return nb
 
-output_path = 'notebooks/train_inet_kaggle.ipynb'
-os.makedirs('notebooks', exist_ok=True)
-with open(output_path, 'w', encoding='utf-8') as f:
-    nbf.write(nb, f)
 
-print(f"Successfully generated notebook at: {output_path}")
+def main():
+    # 1. Generate master notebook
+    master_nb = build_notebook(experiment_name='job1_with_ct', per_gpu_batch=128, val_freq=100)
+    os.makedirs('notebooks', exist_ok=True)
+    with open('notebooks/train_inet_kaggle.ipynb', 'w', encoding='utf-8') as f:
+        nbf.write(master_nb, f)
+    print("Generated master notebook: notebooks/train_inet_kaggle.ipynb")
+
+    # 2. Setup 3 independent Kaggle jobs
+    jobs = [
+        {
+            'dir': 'kaggle_jobs/job1_baseline',
+            'slug': 'mmif-inet-task-1-baseline',
+            'title': 'MMIF-INet Task 1 Baseline',
+            'exp': 'baseline',
+            'file': 'train_inet_baseline.ipynb'
+        },
+        {
+            'dir': 'kaggle_jobs/job2_ct_no_color',
+            'slug': 'mmif-inet-task-2-ct-no-color',
+            'title': 'MMIF-INet Task 2 CT No Color',
+            'exp': 'job1_with_ct',
+            'file': 'train_inet_job1_with_ct.ipynb'
+        },
+        {
+            'dir': 'kaggle_jobs/job3_ct_conditional_color',
+            'slug': 'mmif-inet-task-3-ct-conditional-color',
+            'title': 'MMIF-INet Task 3 CT Conditional Color',
+            'exp': 'job2_with_ct',
+            'file': 'train_inet_job2_with_ct.ipynb'
+        }
+    ]
+
+    for job in jobs:
+        os.makedirs(job['dir'], exist_ok=True)
+        # Build specific notebook
+        job_nb = build_notebook(experiment_name=job['exp'], per_gpu_batch=128, val_freq=100)
+        nb_path = os.path.join(job['dir'], job['file'])
+        with open(nb_path, 'w', encoding='utf-8') as f:
+            nbf.write(job_nb, f)
+
+        # Write kernel metadata
+        meta = {
+            "id": f"cyclerlol/{job['slug']}",
+            "title": job['title'],
+            "code_file": job['file'],
+            "language": "python",
+            "kernel_type": "notebook",
+            "is_private": "true",
+            "enable_gpu": "true",
+            "enable_tpu": "false",
+            "enable_internet": "true",
+            "machine_shape": "NvidiaTeslaT4",
+            "dataset_sources": [],
+            "competition_sources": [],
+            "kernel_sources": [],
+            "model_sources": []
+        }
+        meta_path = os.path.join(job['dir'], 'kernel-metadata.json')
+        with open(meta_path, 'w', encoding='utf-8') as f:
+            json.dump(meta, f, indent=2)
+
+        print(f"Set up Kaggle Job [{job['slug']}] in {job['dir']}")
+
+
+if __name__ == '__main__':
+    main()

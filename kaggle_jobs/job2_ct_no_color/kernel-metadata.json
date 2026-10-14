@@ -1,0 +1,16 @@
+{
+  "id": "cyclerlol/mmif-inet-task-2-ct-no-color",
+  "title": "MMIF-INet Task 2 CT No Color",
+  "code_file": "train_inet_job1_with_ct.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": "true",
+  "enable_gpu": "true",
+  "enable_tpu": "false",
+  "enable_internet": "true",
+  "machine_shape": "NvidiaTeslaT4",
+  "dataset_sources": [],
+  "competition_sources": [],
+  "kernel_sources": [],
+  "model_sources": []
+}
