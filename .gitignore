@@ -34,6 +34,7 @@ third_party/
 # 3. Heavy Models, Checkpoints & Pretrained Weights
 # ------------------------------------------------------------------------------
 /models/
+/logging/
 
 # Deep learning weights & model checkpoints
 *.pth
@@ -94,6 +95,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 *.so
+,vscode/
 
 # Environments & sensitive keys
 .env
@@ -101,6 +103,8 @@ __pycache__/
 !.env.example
 .venv
 .venv/
+.venv_main/
+.venv_mamba/
 venv/
 venv.bak/
 env/
