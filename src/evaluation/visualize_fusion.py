@@ -27,13 +27,21 @@ random_fused_images = random.sample(fused_images, min(num_images, len(fused_imag
 # Display each fused image with its corresponding original images and all fused results
 fig, axes = plt.subplots(num_images, len(original_folders) + len(fused_folders), figsize=(12, 3 * num_images))
 
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from viz_utils import is_gray_fusion_task, postprocess_fused_for_visualization
+
+is_gray_task = is_gray_fusion_task(str(root_folder))
+
 for row, random_fused in enumerate(random_fused_images):
     # Get corresponding images from original folders
     for col, orig_folder in enumerate(original_folders):
         img_path = orig_folder / random_fused.name
         if img_path.exists():
             img = Image.open(img_path)
-            axes[row, col].imshow(img, cmap='gray')
+            img = postprocess_fused_for_visualization(img, is_gray_task=is_gray_task)
+            axes[row, col].imshow(img)
             if row == 0:  # Only set title on first row
                 axes[row, col].set_title(orig_folder.name, fontsize=12, fontweight='bold')
             axes[row, col].axis('off')
@@ -43,7 +51,8 @@ for row, random_fused in enumerate(random_fused_images):
         fused_img_path = fused_folder / random_fused.name
         if fused_img_path.exists():
             fused_img = Image.open(fused_img_path)
-            axes[row, len(original_folders) + col].imshow(fused_img, cmap='gray')
+            fused_img = postprocess_fused_for_visualization(fused_img, is_gray_task=is_gray_task)
+            axes[row, len(original_folders) + col].imshow(fused_img)
             if row == 0:  # Only set title on first row
                 axes[row, len(original_folders) + col].set_title(fused_folder.name, fontsize=12, fontweight='bold')
             axes[row, len(original_folders) + col].axis('off')
