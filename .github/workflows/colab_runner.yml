@@ -1,0 +1,62 @@
+name: Colab GPU Keep-Alive & Cloud Monitor
+
+on:
+  workflow_dispatch:
+    inputs:
+      session_name:
+        description: 'Colab Session Name to keep active'
+        required: true
+        default: 'sess2'
+        type: string
+      duration_hours:
+        description: 'Maximum keepalive duration in hours (max 5.8 on GitHub runners)'
+        required: true
+        default: '5.5'
+        type: string
+
+jobs:
+  colab_keepalive:
+    name: Colab Keep-Alive Monitor
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Tools (Colab CLI & Dependencies)
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+          $HOME/.local/bin/uv tool install google-colab-cli
+          pip install requests kaggle
+
+      - name: Authenticate Colab CLI
+        env:
+          COLAB_TOKEN_JSON: ${{ secrets.COLAB_TOKEN_JSON }}
+        run: |
+          if [ -z "$COLAB_TOKEN_JSON" ]; then
+            echo "::error ::COLAB_TOKEN_JSON secret is not set! Please add it to GitHub Repository Secrets."
+            exit 1
+          fi
+          mkdir -p ~/.config/colab-cli
+          echo "$COLAB_TOKEN_JSON" > ~/.config/colab-cli/token.json
+          chmod 600 ~/.config/colab-cli/token.json
+          echo "Verifying Colab CLI Authentication:"
+          colab whoami
+
+      - name: Run Colab Keep-Alive & Live Stream
+        env:
+          KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+        run: |
+          python3 scripts/colab_gha_keepalive.py \
+            --session "${{ inputs.session_name }}" \
+            --duration-hours "${{ inputs.duration_hours }}" \
+            --interval 30 \
+            --kaggle-token "$KAGGLE_API_TOKEN"
+
