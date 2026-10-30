@@ -17,6 +17,7 @@ sys.path.append(str(PROJECT_ROOT / "src" / "metrics" / "python"))
 
 from quality_metrics import mse, psnr
 from img_metrics import petrovic_metrics
+from viz_utils import is_gray_fusion_task, postprocess_fused_for_visualization
 
 OUTPUT_DIR = PROJECT_ROOT / "results" / "visualizations"
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -24,10 +25,10 @@ DOCS_FIG_DIR = PROJECT_ROOT / "docs" / "figures"
 DOCS_FIG_DIR.mkdir(parents=True, exist_ok=True)
 
 # Define representative sample pairs with region of interest (ROI: y1, y2, x1, x2)
-# Selected to highlight specific benchmark artifacts of MMIF-INet:
-# - CT: chromatic aberration on grayscale, lowered skull contrast
-# - PET: metabolic hotspot suppression, high NABF1 boundary artifacts
-# - SPECT: heavy artificial information injection (NABF) and PSNR deficit
+# Selected to highlight benchmark comparisons across models:
+# - CT: bone & parenchyma detail, skull contrast
+# - PET: metabolic hotspot preservation, boundary sharpness
+# - SPECT: functional perfusion detail and noise suppression
 SAMPLES = [
     {
         "modality": "MRI-CT",
@@ -37,7 +38,7 @@ SAMPLES = [
         "image_file": "32022.png",
         "roi": (120, 180, 130, 190),  # Ventricle & bone structure
         "roi_label": "Bone & Parenchyma Boundary",
-        "artifact_note": "Chromatic fringing & contrast loss in INet (PSNR -4.5dB vs CDD)",
+        "artifact_note": "Bone boundary contrast & soft tissue definition",
     },
     {
         "modality": "MRI-CT",
@@ -47,7 +48,7 @@ SAMPLES = [
         "image_file": "2004.png",
         "roi": (100, 160, 50, 110),   # Frontal skull & cortex
         "roi_label": "Skull Cortex",
-        "artifact_note": "Color shift artifact on grayscale input in INet",
+        "artifact_note": "Grayscale preservation & skull cortex sharpness",
     },
     {
         "modality": "MRI-PET",
@@ -94,13 +95,11 @@ SAMPLES = [
 MODELS = ["MFS-Fusion", "MMIF-CDDFuse", "MMIF-INet", "PSLPT"]
 
 
-def load_img(path: Path) -> np.ndarray:
-    """Load image preserving RGB if available, else RGB from L for consistent display."""
+def load_img(path: Path, is_gray_task: bool = False) -> np.ndarray:
+    """Load image preserving RGB if available, or postprocessing to pure gray via luminance for gray-gray fusion."""
     im = Image.open(path)
-    if im.mode == "L":
-        arr = np.array(im)
-        return np.stack([arr, arr, arr], axis=-1)
-    return np.array(im.convert("RGB"))
+    post_im = postprocess_fused_for_visualization(im, is_gray_task=is_gray_task)
+    return np.array(post_im)
 
 
 def load_gray_norm(path: Path) -> np.ndarray:
@@ -164,18 +163,19 @@ def create_modality_figure(sample_list, figure_title, save_name):
         s2_name = sample["source2"]
         im_name = sample["image_file"]
         y1, y2, x1, x2 = sample["roi"]
+        is_gray = is_gray_fusion_task(mod)
 
         s1_path = PROJECT_ROOT / "dataset" / "Harvard-AANLIB" / ds_mod / s1_name / im_name
         s2_path = PROJECT_ROOT / "dataset" / "Harvard-AANLIB" / ds_mod / s2_name / im_name
 
-        s1_img = load_img(s1_path)
-        s2_img = load_img(s2_path)
+        s1_img = load_img(s1_path, is_gray_task=is_gray)
+        s2_img = load_img(s2_path, is_gray_task=is_gray)
 
         fused_imgs = {}
         metrics_dict = {}
         for m_name in MODELS:
             f_path = PROJECT_ROOT / "results" / m_name / mod / im_name
-            fused_imgs[m_name] = load_img(f_path)
+            fused_imgs[m_name] = load_img(f_path, is_gray_task=is_gray)
             metrics_dict[m_name] = compute_metrics(s1_path, s2_path, f_path)
 
         all_imgs = [s1_img, s2_img, fused_imgs["MFS-Fusion"], fused_imgs["MMIF-CDDFuse"], fused_imgs["MMIF-INet"], fused_imgs["PSLPT"]]
@@ -263,15 +263,16 @@ def create_master_summary_figure():
 
         s1_path = PROJECT_ROOT / "dataset" / "Harvard-AANLIB" / ds_mod / s1_name / im_name
         s2_path = PROJECT_ROOT / "dataset" / "Harvard-AANLIB" / ds_mod / s2_name / im_name
+        is_gray = is_gray_fusion_task(mod)
 
-        s1_img = load_img(s1_path)
-        s2_img = load_img(s2_path)
+        s1_img = load_img(s1_path, is_gray_task=is_gray)
+        s2_img = load_img(s2_path, is_gray_task=is_gray)
 
         fused_imgs = {}
         metrics_dict = {}
         for m_name in MODELS:
             f_path = PROJECT_ROOT / "results" / m_name / mod / im_name
-            fused_imgs[m_name] = load_img(f_path)
+            fused_imgs[m_name] = load_img(f_path, is_gray_task=is_gray)
             metrics_dict[m_name] = compute_metrics(s1_path, s2_path, f_path)
 
         all_imgs = [s1_img, s2_img, fused_imgs["MFS-Fusion"], fused_imgs["MMIF-CDDFuse"], fused_imgs["MMIF-INet"], fused_imgs["PSLPT"]]
@@ -341,7 +342,7 @@ def create_master_summary_figure():
 
     plt.suptitle(
         "Multi-Modal Medical Image Fusion Comparison (Paper-Style Evaluation)\n"
-        "Red box & inset indicate zoomed ROI highlighting MMIF-INet artifacts vs. SOTA",
+        "Red box & inset indicate zoomed ROI highlighting detail preservation vs. SOTA",
         fontsize=14, fontweight="bold", y=0.99
     )
 
@@ -357,7 +358,7 @@ def main():
     # CT
     create_modality_figure(
         [SAMPLES[0], SAMPLES[1]],
-        "MRI-CT Fusion: Qualitative Comparison & Artifact Inspection\n(Notice chromatic aberration and lower bone contrast in MMIF-INet)",
+        "MRI-CT Fusion: Qualitative Comparison & Structural Inspection\n(Gray-gray fusion postprocessed to clean grayscale, preserving bone and parenchyma details)",
         "mri_ct_paper_comparison.png"
     )
     # PET

@@ -1,0 +1,3 @@
+setup 4 traininng job on kaggle, 2 each key, for 4 of the experiments/inet_ablation/01_cnn_architectures. 
+1500 epoch, no decay, using the new val tech, (MSSSIM, VIFF, Qabf) but this time add in MI in eval too. Val every 100 epoch. 
+After setup training jobs, monitor until each reach their first val, then stop [/goal](slashCommand;goal) 
