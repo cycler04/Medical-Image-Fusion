@@ -1,22 +1,32 @@
-name: Colab GPU Keep-Alive & Cloud Monitor
+name: Colab GPU End-to-End Cloud Trainer
 
 on:
   workflow_dispatch:
     inputs:
-      session_name:
-        description: 'Colab Session Name to keep active'
+      epochs:
+        description: 'Number of epochs to train'
         required: true
-        default: 'sess2'
+        default: '300'
+        type: string
+      batch_size:
+        description: 'Batch size'
+        required: true
+        default: '4'
+        type: string
+      val_freq:
+        description: 'Validation frequency (epochs)'
+        required: true
+        default: '50'
         type: string
       duration_hours:
-        description: 'Maximum keepalive duration in hours (max 5.8 on GitHub runners)'
+        description: 'Maximum cloud runner duration in hours'
         required: true
         default: '5.5'
         type: string
 
 jobs:
-  colab_keepalive:
-    name: Colab Keep-Alive Monitor
+  cloud_training:
+    name: Colab Cloud GPU Training & Keep-Alive
     runs-on: ubuntu-latest
     timeout-minutes: 360
 
@@ -29,7 +39,7 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Install Tools (Colab CLI & Dependencies)
+      - name: Install Colab CLI & Tools
         run: |
           curl -LsSf https://astral.sh/uv/install.sh | sh
           echo "$HOME/.local/bin" >> $GITHUB_PATH
@@ -47,16 +57,16 @@ jobs:
           mkdir -p ~/.config/colab-cli
           echo "$COLAB_TOKEN_JSON" > ~/.config/colab-cli/token.json
           chmod 600 ~/.config/colab-cli/token.json
-          echo "Verifying Colab CLI Authentication:"
+          echo "Colab CLI Identity:"
           colab whoami
 
-      - name: Run Colab Keep-Alive & Live Stream
+      - name: Provision GPU, Deploy Dual Training & Stream Logs
         env:
           KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
         run: |
-          python3 scripts/colab_gha_keepalive.py \
-            --session "${{ inputs.session_name }}" \
+          python3 scripts/colab_cloud_train.py \
+            --epochs "${{ inputs.epochs }}" \
+            --batch-size "${{ inputs.batch_size }}" \
+            --val-freq "${{ inputs.val_freq }}" \
             --duration-hours "${{ inputs.duration_hours }}" \
-            --interval 30 \
             --kaggle-token "$KAGGLE_API_TOKEN"
-
