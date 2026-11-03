@@ -3,10 +3,15 @@ name: Colab GPU End-to-End Cloud Trainer
 on:
   workflow_dispatch:
     inputs:
+      session:
+        description: 'Colab session name'
+        required: true
+        default: 'sess1'
+        type: string
       epochs:
         description: 'Number of epochs to train'
         required: true
-        default: '300'
+        default: '1500'
         type: string
       batch_size:
         description: 'Batch size'
@@ -60,13 +65,21 @@ jobs:
           echo "Colab CLI Identity:"
           colab whoami
 
-      - name: Provision GPU, Deploy Dual Training & Stream Logs
+      - name: Maintain Keep-Alive & Stream Training Logs
         env:
           KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
         run: |
-          python3 scripts/colab_cloud_train.py \
-            --epochs "${{ inputs.epochs }}" \
-            --batch-size "${{ inputs.batch_size }}" \
-            --val-freq "${{ inputs.val_freq }}" \
-            --duration-hours "${{ inputs.duration_hours }}" \
-            --kaggle-token "$KAGGLE_API_TOKEN"
+          if colab sessions | grep -q "${{ inputs.session }}"; then
+            echo "[+] Found active Colab session '${{ inputs.session }}'. Running keep-alive & remote log monitor..."
+            python3 scripts/colab_gha_keepalive.py \
+              --session "${{ inputs.session }}" \
+              --duration-hours "${{ inputs.duration_hours }}"
+          else
+            echo "[*] Session '${{ inputs.session }}' not found. Provisioning fresh session..."
+            python3 scripts/colab_cloud_train.py \
+              --epochs "${{ inputs.epochs }}" \
+              --batch-size "${{ inputs.batch_size }}" \
+              --val-freq "${{ inputs.val_freq }}" \
+              --duration-hours "${{ inputs.duration_hours }}" \
+              --kaggle-token "$KAGGLE_API_TOKEN"
+          fi

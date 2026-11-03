@@ -51,17 +51,17 @@ procs = [l for l in proc_out.splitlines() if l.strip()]
 backup_proc = run_sh("ps -ef | grep colab_kaggle_backup.py | grep -v grep")
 
 # Log tails
-runs_dir = Path("/content/Medical-Image-Fusion/experiments/inet_ablation/01_cnn_architectures/01_dense_residual/runs")
-g16_tail = run_sh(f"tail -n 1 {runs_dir}/run_g16_l4.log") if (runs_dir / "run_g16_l4.log").exists() else "No log"
-g32_tail = run_sh(f"tail -n 1 {runs_dir}/run_g32_l3.log") if (runs_dir / "run_g32_l3.log").exists() else "No log"
+log_dir = Path("/content/Medical-Image-Fusion/logs/colab_training")
+spatial_tail = run_sh(f"tail -n 1 {log_dir}/train_spatial_simple_cnn.log") if (log_dir / "train_spatial_simple_cnn.log").exists() else ""
+cbam_tail = run_sh(f"tail -n 1 {log_dir}/train_cbam_simple_cnn.log") if (log_dir / "train_cbam_simple_cnn.log").exists() else ""
 
 print("PROBE_JSON_START")
 print(json.dumps({
     "gpu": gpu_line,
     "active_train_processes": len(procs),
     "backup_daemon_active": len(backup_proc.strip()) > 0,
-    "g16_tail": g16_tail,
-    "g32_tail": g32_tail
+    "spatial_tail": spatial_tail,
+    "cbam_tail": cbam_tail
 }))
 print("PROBE_JSON_END")
 """
@@ -100,7 +100,7 @@ else:
 
 def main():
     parser = argparse.ArgumentParser(description="Colab GitHub Actions Keep-Alive Runner")
-    parser.add_argument("--session", type=str, default="sess2", help="Colab session name")
+    parser.add_argument("--session", type=str, default="sess1", help="Colab session name")
     parser.add_argument("--duration-hours", type=float, default=5.5, help="Maximum run hours before exit")
     parser.add_argument("--interval", type=int, default=30, help="Heartbeat probe interval in seconds")
     parser.add_argument("--kaggle-token", type=str, default="", help="Kaggle API token for cloud backup")
@@ -151,14 +151,14 @@ def main():
             print(f"[{now_str} | Cycle {cycle:04d}] GPU: {gpu_str} | Active Trainers: {active_p} | Backup: {backup_ok}")
             
             # Print log excerpts if available
-            g16 = status.get("g16_tail", "")
-            g32 = status.get("g32_tail", "")
-            if "Epoch [" in g16:
-                short_g16 = g16.split("INFO: ")[-1] if "INFO: " in g16 else g16
-                print(f"         ├─ g16_l4: {short_g16}")
-            if "Epoch [" in g32:
-                short_g32 = g32.split("INFO: ")[-1] if "INFO: " in g32 else g32
-                print(f"         └─ g32_l3: {short_g32}")
+            spatial = status.get("spatial_tail", "")
+            cbam = status.get("cbam_tail", "")
+            if "Epoch [" in spatial:
+                short_s = spatial.split("INFO: ")[-1] if "INFO: " in spatial else spatial
+                print(f"         ├─ Spatial SimpleCNN: {short_s}")
+            if "Epoch [" in cbam:
+                short_c = cbam.split("INFO: ")[-1] if "INFO: " in cbam else cbam
+                print(f"         └─ CBAM SimpleCNN:    {short_c}")
 
             # If training finished
             if active_p == 0 and cycle > 3:
